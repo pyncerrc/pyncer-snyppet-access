@@ -56,8 +56,11 @@ class Install extends AbstractInstall
      */
     protected function safeUninstall(): bool
     {
-        if ($connection->hasTable('user')) {
+        if ($connection->hasTable('token')) {
             $this->connection->dropTable('token');
+        }
+
+        if ($connection->hasTable('user')) {
             $this->connection->dropTable('user');
         }
 
