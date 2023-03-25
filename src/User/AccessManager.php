@@ -182,9 +182,13 @@ class AccessManager
         return ($this->getUser()->getGroup() === Group::GUEST);
     }
 
-    public function isSuper(): bool
+    public function isUser(): bool
     {
-        return ($this->getUser()->getGroup() === Group::SUPER);
+        if ($this->isSuper() || $this->isAdmin()) {
+            return true;
+        }
+
+        return ($this->getUser()->getGroup() === Group::USER);
     }
 
     public function isAdmin(): bool
@@ -196,12 +200,8 @@ class AccessManager
         return ($this->getUser()->getGroup() === Group::ADMIN);
     }
 
-    public function isUser(): bool
+    public function isSuper(): bool
     {
-        if ($this->isSuper() || $this->isAdmin()) {
-            return true;
-        }
-
-        return ($this->getUser()->getGroup() !== Group::USER);
+        return ($this->getUser()->getGroup() === Group::SUPER);
     }
 }
