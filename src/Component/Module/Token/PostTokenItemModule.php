@@ -11,7 +11,7 @@ use Pyncer\Component\Module\AbstractModule;
 use Pyncer\Data\MapperQuery\OptionsQueryParam;
 use Pyncer\Http\Message\JsonResponse;
 use Pyncer\Http\Message\Status;
-use Pyncer\Snyppet\Access\Component\Forge\User\Token\TokenElementTrait;
+use Pyncer\Snyppet\Access\Component\Forge\Token\TokenElementTrait;
 use Pyncer\Snyppet\Access\Table\Token\TokenMapper;
 use Pyncer\Snyppet\Access\Table\Token\TokenModel;
 use Pyncer\Utility\Token;

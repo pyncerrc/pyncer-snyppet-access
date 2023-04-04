@@ -5,6 +5,7 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Pyncer\App\Identifier as ID;
 use Pyncer\Http\Message\Response;
 use Pyncer\Http\Message\Status;
+use Pyncer\Snyppet\Access\Component\Forge\Token\TokenElementTrait;
 use Pyncer\Snyppet\Access\Table\Token\TokenMapper;
 
 use const Pyncer\Snyppet\Access\DEFAULT_RELAM as PYNCER_ACCESS_DEFAULT_RELAM;
