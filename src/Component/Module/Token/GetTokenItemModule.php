@@ -1,5 +1,5 @@
 <?php
-namespace Pyncer\Snyppet\Access\Component\Module\Access;
+namespace Pyncer\Snyppet\Access\Component\Module\Token;
 
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Pyncer\App\Identifier as ID;

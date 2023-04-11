@@ -1,5 +1,5 @@
 <?php
-namespace Pyncer\Snyppet\Access\Component\Module\Access;
+namespace Pyncer\Snyppet\Access\Component\Module\Token;
 
 use DateInterval;
 use DateTime;
@@ -14,6 +14,8 @@ use Pyncer\Http\Message\Status;
 use Pyncer\Snyppet\Access\Component\Forge\Token\TokenElementTrait;
 use Pyncer\Snyppet\Access\Table\Token\TokenMapper;
 use Pyncer\Snyppet\Access\Table\Token\TokenModel;
+use Pyncer\Snyppet\Access\User\AccessManager;
+use Pyncer\Snyppet\Access\User\LoginMethod;
 use Pyncer\Utility\Token;
 
 use const Pyncer\DATE_TIME_FORMAT as PYNCER_DATE_TIME_FORMAT;
@@ -29,7 +31,7 @@ class PostTokenItemModule extends AbstractModule
     protected function getPrimaryResponse(): PsrResponseInterface
     {
         $connection = $this->get(ID::DATABASE);
-        $snyppetManager = $handler->get(ID::SNYPPET);
+        $snyppetManager = $this->get(ID::SNYPPET);
 
         $access = new AccessManager($connection);
 
@@ -51,7 +53,7 @@ class PostTokenItemModule extends AbstractModule
                 $allowGuestAccess
             );
 
-            $loginTokenExpiration = $config->getBool(
+            $loginTokenExpiration = $config->getInt(
                 'user_login_token_expiration',
                 $loginTokenExpiration
             );

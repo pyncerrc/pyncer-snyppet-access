@@ -58,7 +58,7 @@ class TokenMapperQuery extends AbstractRequestMapperQuery
     ): SelectQueryInterface
     {
         if ($option === 'include-user') {
-            if (!$query->hasJoinedTable('user')) {
+            if (!$query->hasJoined('user')) {
                 $query->leftJoin('user', 'id', 'user_id');
             }
 

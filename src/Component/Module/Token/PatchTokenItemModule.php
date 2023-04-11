@@ -1,5 +1,5 @@
 <?php
-namespace Pyncer\Snyppet\Access\Component\Module\Access;
+namespace Pyncer\Snyppet\Access\Component\Module\Token;
 
 use DateTime;
 use DateInterval;
@@ -29,12 +29,14 @@ class PatchTokenItemModule extends AbstractModule
     protected function getPrimaryResponse(): PsrResponseInterface
     {
         $connection = $this->get(ID::DATABASE);
+        $snyppetManager = $this->get(ID::SNYPPET);
+
         $loginTokenExpiration = PYNCER_ACCESS_LOGIN_TOKEN_EXPIRATION;
 
         if ($snyppetManager->has('config')) {
             $config = $this->get(ID::config());
 
-            $loginTokenExpiration = $config->getBool(
+            $loginTokenExpiration = $config->getInt(
                 'user_login_token_expiration',
                 $loginTokenExpiration
             );
@@ -123,7 +125,7 @@ class PatchTokenItemModule extends AbstractModule
         // Filters
         $filters = 'scheme eq \'Bearer\' and ';
 
-        $realm = $this->getRealm() ?? PYNCER_ACCESS_DEFAULT_REALM
+        $realm = $this->getRealm() ?? PYNCER_ACCESS_DEFAULT_REALM;
 
         $filters .= 'realm eq \'' . $realm . '\'';
 

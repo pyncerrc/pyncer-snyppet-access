@@ -79,7 +79,7 @@ class AccessManager
                 $userModel
             );
 
-            if (!$passwordManager->equals($password)) {
+            if (!$passwordManager->verify($password)) {
                 return false;
             }
         }
