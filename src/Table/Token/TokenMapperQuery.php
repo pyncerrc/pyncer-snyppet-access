@@ -12,7 +12,6 @@ use function Pyncer\Array\filter_prefixed_keys as array_filter_prefixed_keys;
 class TokenMapperQuery extends AbstractRequestMapperQuery
 {
     public function overrideModel(
-        ConnectionInterface $connection,
         ModelInterface $model,
         array $data
     ): ModelInterface
