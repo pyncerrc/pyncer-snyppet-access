@@ -31,7 +31,9 @@ class InitializeMiddleware implements MiddlewareInterface
 
         $connection = $handler->get(ID::DATABASE);
         if (!$connection instanceof ConnectionInterface) {
-            throw new UnexpectedValueException('Invalid database connection.');
+            throw new UnexpectedValueException(
+                'Invalid database connection.'
+            );
         }
 
         // User mapper adaptor

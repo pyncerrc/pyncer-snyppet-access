@@ -7,6 +7,7 @@ use DateInterval;
 use Pyncer\Data\Mapper\MapperInterface;
 use Pyncer\Data\MapperQuery\MapperQueryInterface;
 use Pyncer\Database\ConnectionInterface;
+use Pyncer\Database\ConnectionTrait;
 use Pyncer\Exception\InvalidArgumentException;
 use Pyncer\Exception\UnexpectedValueException;
 use Pyncer\Snyppet\Access\Table\Token\TokenMapper;
@@ -22,11 +23,14 @@ use const Pyncer\DATE_TIME_NOW as PYNCER_DATE_TIME_NOW;
 
 class AccessManager
 {
+    use ConnectionTrait;
+
     protected ?UserModel $userModel = null;
 
-    public function __construct(
-        protected ConnectionInterface $connection
-    ) {}
+    public function __construct(ConnectionInterface $connection)
+    {
+        $this->setConnection($connection);
+    }
 
     public function loginWithEmail(string $email, string $password): bool
     {
@@ -78,7 +82,7 @@ class AccessManager
             }
 
             $passwordManager = new PasswordManager(
-                $this->connection,
+                $this->getConnection(),
                 $userModel
             );
 
@@ -95,7 +99,7 @@ class AccessManager
     {
         $this->userModel = null;
 
-        $tokenMapper = new TokenMapper($this->connection);
+        $tokenMapper = new TokenMapper($this->getConnection());
         $tokenModel = $tokenMapper->selectByToken(
             $schem,
             $realm,
@@ -126,7 +130,10 @@ class AccessManager
         $userMapperQuery = $this->forgeUserMapperQuery();
         $userModel = $userMapper->selectById($userId, $userMapperQuery);
 
-        if (!$userModel || !$userModel->getEnabled() || $userModel->getDeleted()) {
+        if (!$userModel ||
+            !$userModel->getEnabled() ||
+            $userModel->getDeleted()
+        ) {
             return false;
         }
 
@@ -165,7 +172,7 @@ class AccessManager
     */
     protected function forgeUserMapper(): MapperInterface
     {
-        return new UserMapper($this->connection);
+        return new UserMapper($this->getConnection());
     }
     /**
     * @return \Pyncer\Data\MapperQuery\MapperQueryInterface
@@ -191,7 +198,9 @@ class AccessManager
                 $userModel->getDeleted() ||
                 $userModel->getGroup() !== Group::GUEST
             ) {
-                throw new UnexpectedValueException('Expected guest user model.');
+                throw new UnexpectedValueException(
+                    'Expected guest user model.'
+                );
             }
 
             $this->userModel = $userModel;
