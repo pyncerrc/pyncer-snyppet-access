@@ -82,7 +82,8 @@ class GetTokenItemModule extends AbstractModule
     */
     protected function forgeMapperQuery(): ?MapperQueryInterface
     {
-        $tokenMapperQuery = new TokenMapperQuery();
+        $connection = $this->get(ID::DATABASE);
+        $tokenMapperQuery = new TokenMapperQuery($connection);
 
         // Options
         $options = new OptionsQueryParam(

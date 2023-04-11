@@ -4,6 +4,8 @@ namespace Pyncer\Snyppet\Access\User;
 use DateTime;
 use DateTimeZone;
 use DateInterval;
+use Pyncer\Data\Mapper\MapperInterface;
+use Pyncer\Data\MapperQuery\MapperQueryInterface;
 use Pyncer\Database\ConnectionInterface;
 use Pyncer\Exception\InvalidArgumentException;
 use Pyncer\Exception\UnexpectedValueException;
@@ -56,13 +58,14 @@ class AccessManager
             return false;
         }
 
-        $userMapper = new UserMapper($this->connection);
+        $userMapper = $this->forgeUserMapper();
+        $userMapperQuery = $this->forgeUserMapperQuery();
 
         $userModel = match ($loginMethod) {
-            LoginMethod::EMAIL => $userMapper->selectByEmail($login),
-            LoginMethod::USERNAME => $userMapper->selectByUsername($login),
-            LoginMethod::PHONE => $userMapper->selectByPhone($login),
-            default => $userMapper->selectByEmail($login),
+            LoginMethod::EMAIL => $userMapper->selectByEmail($login, $userMapperQuery),
+            LoginMethod::USERNAME => $userMapper->selectByUsername($login, $userMapperQuery),
+            LoginMethod::PHONE => $userMapper->selectByPhone($login, $userMapperQuery),
+            default => $userMapper->selectByEmail($login, $userMapperQuery),
         };
 
         if (!$userModel || !$userModel->getEnabled() || $userModel->getDeleted()) {
@@ -119,8 +122,9 @@ class AccessManager
             );
         }
 
-        $userMapper = new UserMapper($this->connection);
-        $userModel = $userMapper->selectById($userId);
+        $userMapper = $this->forgeUserMapper();
+        $userMapperQuery = $this->forgeUserMapperQuery();
+        $userModel = $userMapper->selectById($userId, $userMapperQuery);
 
         if (!$userModel || !$userModel->getEnabled() || $userModel->getDeleted()) {
             return false;
@@ -156,13 +160,37 @@ class AccessManager
         return false;
     }
 
+    /**
+    * @return \Pyncer\Data\Mapper\MapperInterface
+    */
+    protected function forgeUserMapper(): MapperInterface
+    {
+        return new UserMapper($this->connection);
+    }
+    /**
+    * @return \Pyncer\Data\MapperQuery\MapperQueryInterface
+    */
+    protected function forgeUserMapperQuery(): ?MapperQueryInterface
+    {
+        return null;
+    }
+
     public function getUser(): UserModel
     {
         if ($this->userModel === null) {
-            $userMapper = new UserMapper($this->connection);
-            $userModel = $userMapper->selectById(PYNCER_ACCESS_USER_GUEST_ID);
+            $userMapper = $this->forgeUserMapper();
+            $userMapperQuery = $this->forgeUserMapperQuery();
 
-            if (!$userModel || $userModel->getGroup() !== Group::GUEST) {
+            $userModel = $userMapper->selectById(
+                PYNCER_ACCESS_USER_GUEST_ID,
+                $userMapperQuery
+            );
+
+            if (!$userModel ||
+                !$userModel->getEnabled() ||
+                $userModel->getDeleted() ||
+                $userModel->getGroup() !== Group::GUEST
+            ) {
                 throw new UnexpectedValueException('Expected guest user model.');
             }
 

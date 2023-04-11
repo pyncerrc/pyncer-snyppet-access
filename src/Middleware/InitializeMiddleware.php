@@ -35,21 +35,25 @@ class InitializeMiddleware implements MiddlewareInterface
         }
 
         // User mapper adaptor
-        $userMapperQuery = new UserMapperQuery();
-        $userMapperQuery->setFilter(new FiltersQueryParam(
-            'enabled eq true and deleted eq false'
-        ));
-        $userMapperAdaptor = new MapperAdaptor(
-            new UserMapper($connection),
-            $userMapperQuery
-        );
-        $handler->set(ID::mapperAdaptor('user'), $userMapperAdaptor);
+        if (!$handler->has(ID::mapperAdaptor('user'))) {
+            $userMapperQuery = new UserMapperQuery($connection);
+            $userMapperQuery->setFilter(new FiltersQueryParam(
+                'enabled eq true and deleted eq false'
+            ));
+            $userMapperAdaptor = new MapperAdaptor(
+                new UserMapper($connection),
+                $userMapperQuery
+            );
+            $handler->set(ID::mapperAdaptor('user'), $userMapperAdaptor);
+        }
 
         // Token mapper adaptor
-        $tokenMapperAdaptor = new MapperAdaptor(
-            new TokenMapper($connection),
-        );
-        $handler->set(ID::mapperAdaptor('token'), $tokenMapperAdaptor);
+        if (!$handler->has(ID::mapperAdaptor('token'))) {
+            $tokenMapperAdaptor = new MapperAdaptor(
+                new TokenMapper($connection),
+            );
+            $handler->set(ID::mapperAdaptor('token'), $tokenMapperAdaptor);
+        }
 
         return $handler->next($request, $response);
     }

@@ -32,6 +32,7 @@ class GetUserIndexModule extends AbstractGetIndexModule
 
     protected function forgeMapperQuery(): ?MapperQueryInterface
     {
-        return new UserMapperQuery($this->request);
+        $connection = $this->get(ID::DATABASE);
+        return new UserMapperQuery($connection, $this->request);
     }
 }

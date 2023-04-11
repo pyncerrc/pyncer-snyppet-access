@@ -55,7 +55,8 @@ class DeleteTokenItemModule extends AbstractModule
     */
     protected function forgeMapperQuery(): ?MapperQueryInterface
     {
-        $tokenMapperQuery = new TokenMapperQuery();
+        $connection = $this->get(ID::DATABASE);
+        $tokenMapperQuery = new TokenMapperQuery($connection);
 
         // Filters
         $filters = 'scheme eq \'Bearer\' and ';

@@ -10,7 +10,7 @@
         "pyncer/app": "^1.2.0",
         "pyncer/core": "^1.0.1",
         "pyncer/component": "^1.0.1",
-        "pyncer/data": "^1.0.1",
+        "pyncer/data": "^1.1.0",
         "pyncer/database": "^1.0.1",
         "pyncer/http": "^1.0.3",
         "pyncer/snyppet": "^1.1.0",

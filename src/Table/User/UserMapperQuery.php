@@ -5,7 +5,11 @@ use Pyncer\Data\MapperQuery\AbstractRequestMapperQuery;
 
 class UserMapperQuery extends AbstractRequestMapperQuery
 {
-    protected function isValidFilter(string $left, $right, string $operator): bool
+    protected function isValidFilter(
+        string $left,
+        mixed $right,
+        string $operator
+    ): bool
     {
         if ($left === 'internal' && is_bool($right) && $operator === '=') {
             return true;
