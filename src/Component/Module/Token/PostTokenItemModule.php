@@ -28,12 +28,18 @@ class PostTokenItemModule extends AbstractModule
 {
     use TokenElementTrait;
 
+    protected function initializeAccessManager(): AccessManager
+    {
+        $connection = $this->get(ID::DATABASE);
+        return new AccessManager($connection);
+    }
+
     protected function getPrimaryResponse(): PsrResponseInterface
     {
         $connection = $this->get(ID::DATABASE);
         $snyppetManager = $this->get(ID::SNYPPET);
 
-        $access = new AccessManager($connection);
+        $access = $this->initializeAccessManager();
 
         $loginMethod = PYNCER_ACCESS_LOGIN_METHOD;
         $allowGuestAccess = PYNCER_ACCESS_ALLOW_GUEST_ACCESS;
