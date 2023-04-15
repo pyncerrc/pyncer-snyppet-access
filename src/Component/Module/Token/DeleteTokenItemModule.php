@@ -61,7 +61,7 @@ class DeleteTokenItemModule extends AbstractModule
         // Filters
         $filters = 'scheme eq \'Bearer\' and ';
 
-        $realm = $this->getRealm() ?? PYNCER_ACCESS_DEFAULT_REALM
+        $realm = $this->getRealm() ?? PYNCER_ACCESS_DEFAULT_REALM;
 
         $filters .= 'realm eq \'' . $realm . '\'';
 

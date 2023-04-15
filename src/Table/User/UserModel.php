@@ -58,7 +58,7 @@ class UserModel extends AbstractModel
     public function setGroup(string|Group $value): static
     {
         if ($value instanceof Group) {
-            $value = $group->value;
+            $value = $value->value;
         }
 
         $this->set('group', $value);
