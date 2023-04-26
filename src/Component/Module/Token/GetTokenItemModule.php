@@ -60,21 +60,29 @@ class GetTokenItemModule extends AbstractModule
         ];
 
         if ($tokenMapperQuery->getOptions()->hasOption('include-user')) {
-            $user = $tokenModel->getSideModel('user')->getData();
-            unset(
-                $user['mark'],
-                $user['password'],
-                $user['enabled'],
-                $user['deleted']
-            );
+            $userModel = $tokenModel->getSideModel('user');
 
-            $data['user'] = $user;
+            $data['user'] = $this->getResponseUserData($userModel);
         }
 
         return new JsonResponse(
             Status::SUCCESS_200_OK,
             $data
         );
+    }
+
+    protected function getResponseUserData(ModelInterface $userModel): array
+    {
+        $data = $userModel->getData();
+
+        unset(
+            $data['mark'],
+            $data['password'],
+            $data['enabled'],
+            $data['deleted']
+        );
+
+        return $data;
     }
 
     /**

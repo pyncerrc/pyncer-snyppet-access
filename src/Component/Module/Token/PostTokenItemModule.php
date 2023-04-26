@@ -119,15 +119,9 @@ class PostTokenItemModule extends AbstractModule
 
         $options = new OptionsQueryParam($this->queryParams->getStr('$options'));
         if ($options->hasOption('include-user')) {
-            $user = $access->getUser()->getData();
-            unset(
-                $user['mark'],
-                $user['password'],
-                $user['enabled'],
-                $user['deleted']
-            );
+            $userModel = $access->getUser();
 
-            $data['user'] = $user;
+            $data['user'] = $this->getResponseUserData($userModel);
         }
 
         return (new JsonResponse(
@@ -138,6 +132,21 @@ class PostTokenItemModule extends AbstractModule
             $this->getResourceUrl($model)
         );
     }
+
+    protected function getResponseUserData(ModelInterface $userModel): array
+    {
+        $data = $userModel->getData();
+
+        unset(
+            $data['mark'],
+            $data['password'],
+            $data['enabled'],
+            $data['deleted']
+        );
+
+        return $data;
+    }
+
     protected function getResourceUrl(TokenModel $model): PsrUriInterface
     {
         $url = $this->request->getUri();

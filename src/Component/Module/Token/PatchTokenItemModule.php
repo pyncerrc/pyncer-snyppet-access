@@ -92,21 +92,29 @@ class PatchTokenItemModule extends AbstractModule
         ];
 
         if ($tokenMapperQuery->getOptions()->hasOption('include-user')) {
-            $userModel = $tokenModel->getSideModel('user')->getData();
-            unset(
-                $userModel['mark'],
-                $userModel['password'],
-                $userModel['enabled'],
-                $userModel['deleted']
-            );
+            $userModel = $tokenModel->getSideModel('user');
 
-            $data['user'] = $userModel;
+            $data['user'] = $this->getResponseUserData($userModel);
         }
 
         return new JsonResponse(
             Status::SUCCESS_200_OK,
             $data
         );
+    }
+
+    protected function getResponseUserData(ModelInterface $userModel): array
+    {
+        $data = $userModel->getData();
+
+        unset(
+            $data['mark'],
+            $data['password'],
+            $data['enabled'],
+            $data['deleted']
+        );
+
+        return $data;
     }
 
     /**
