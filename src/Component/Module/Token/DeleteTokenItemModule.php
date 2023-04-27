@@ -6,6 +6,7 @@ use Pyncer\App\Identifier as ID;
 use Pyncer\Component\Module\AbstractModule;
 use Pyncer\Data\MapperQuery\FiltersQueryParam;
 use Pyncer\Data\MapperQuery\MapperQueryInterface;
+use Pyncer\Exception\UnexpectedValueException;
 use Pyncer\Http\Message\Response;
 use Pyncer\Http\Message\Status;
 use Pyncer\Snyppet\Access\Component\Forge\Token\TokenElementTrait;
@@ -13,10 +14,23 @@ use Pyncer\Snyppet\Access\Table\Token\TokenMapper;
 use Pyncer\Snyppet\Access\Table\Token\TokenMapperQuery;
 
 use const Pyncer\Snyppet\Access\DEFAULT_RELAM as PYNCER_ACCESS_DEFAULT_RELAM;
+use const Pyncer\Snyppet\Access\DEFAULT_SCHEME as PYNCER_ACCESS_DEFAULT_SCHEME;
 
 class DeleteTokenItemModule extends AbstractModule
 {
     use TokenElementTrait;
+
+    protected ?RoutingPathInterface $idRoutingPath = null;
+
+    public function getIdRoutingPath(): ?RoutingPathInterface
+    {
+        return $this->idRoutingPath;
+    }
+    public function setIdRoutingPath(?RoutingPathInterface $value): static
+    {
+        $this->idRoutingPath = $value;
+        return $this;
+    }
 
     protected function getPrimaryResponse(): PsrResponseInterface
     {
@@ -26,19 +40,32 @@ class DeleteTokenItemModule extends AbstractModule
         $tokenMapperQuery = $this->forgeMapperQuery();
         $tokenModel = null;
 
-        $id = $this->queryParams->getInt('id', null);
-        if ($id !== null) {
-            $tokenModel = $tokenMapper->selectById($id, $tokenMapperQuery);
-        } else {
-            $id64 = $this->queryParams->getStr('id64', null);
+        $idRoutingPath = $this->getIdRoutingPath()?->getRouteDirPath() ?? '@id64';
+        if ($idRoutingPath === '@id64') {
+            $id64 = $this->queryParams->getStr(
+                $this->getIdRoutingPath()?->getQueryName() ?? 'id64',
+                null
+            );
+
             if ($id64 !== null) {
-                $tokenModel = $tokenMapper->selectByToken(
-                    'Bearer',
-                    $this->getRealm() ?? PYNCER_ACCESS_DEFAULT_REALM,
-                    $id64,
+                $tokenModel = $tokenMapper->selectByColumns(
+                    ['token' => $id64],
                     $tokenMapperQuery
                 );
             }
+        } elseif ($idRoutingPath === '@id') {
+            $id = $this->queryParams->getInt(
+                $this->getIdRoutingPath()?->getQueryName() ?? 'id',
+                null
+            );
+
+            if ($id !== null) {
+                $tokenModel = $tokenMapper->selectById($id, $tokenMapperQuery);
+            }
+        } else {
+            throw new UnexpectedValueException(
+                'Id routing path is not supported. (' . $idRoutingPath . ')'
+            );
         }
 
         if (!$tokenModel) {
@@ -63,7 +90,8 @@ class DeleteTokenItemModule extends AbstractModule
         $tokenMapperQuery = new TokenMapperQuery($connection);
 
         // Filters
-        $filters = 'scheme eq \'Bearer\' and ';
+        $scheme = $this->getScheme() ?? PYNCER_ACCESS_DEFAULT_SCHEME;
+        $filters = 'scheme eq \'' . $scheme . '\' and ';
 
         $realm = $this->getRealm() ?? PYNCER_ACCESS_DEFAULT_REALM;
 

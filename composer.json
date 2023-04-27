@@ -13,6 +13,7 @@
         "pyncer/data": "^1.1.0",
         "pyncer/database": "^1.0.1",
         "pyncer/http": "^1.0.3",
+        "pyncer/routing": "^1.1.0",
         "pyncer/snyppet": "^1.1.0",
         "pyncer/utility": "^1.0.0",
         "pyncer/validation": "^1.1.0"

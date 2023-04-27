@@ -9,6 +9,8 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Pyncer\App\Identifier as ID;
 use Pyncer\Component\Module\AbstractModule;
 use Pyncer\Data\MapperQuery\OptionsQueryParam;
+use Pyncer\Data\Model\ModelInterface;
+use Pyncer\Exception\UnexpectedValueException;
 use Pyncer\Http\Message\JsonResponse;
 use Pyncer\Http\Message\Status;
 use Pyncer\Snyppet\Access\Component\Forge\Token\TokenElementTrait;
@@ -21,12 +23,25 @@ use Pyncer\Utility\Token;
 use const Pyncer\DATE_TIME_FORMAT as PYNCER_DATE_TIME_FORMAT;
 use const Pyncer\Snyppet\Access\ALLOW_GUEST_ACCESS as PYNCER_ACCESS_ALLOW_GUEST_ACCESS;
 use const Pyncer\Snyppet\Access\DEFAULT_REALM as PYNCER_ACCESS_DEFAULT_REALM;
+use const Pyncer\Snyppet\Access\DEFAULT_SCHEME as PYNCER_ACCESS_DEFAULT_SCHEME;
 use const Pyncer\Snyppet\Access\LOGIN_METHOD as PYNCER_ACCESS_LOGIN_METHOD;
 use const Pyncer\Snyppet\Access\LOGIN_TOKEN_EXPIRATION as PYNCER_ACCESS_LOGIN_TOKEN_EXPIRATION;
 
 class PostTokenItemModule extends AbstractModule
 {
     use TokenElementTrait;
+
+    protected ?RoutingPathInterface $idRoutingPath = null;
+
+    public function getIdRoutingPath(): ?RoutingPathInterface
+    {
+        return $this->idRoutingPath;
+    }
+    public function setIdRoutingPath(?RoutingPathInterface $value): static
+    {
+        $this->idRoutingPath = $value;
+        return $this;
+    }
 
     protected function initializeAccessManager(): AccessManager
     {
@@ -100,7 +115,7 @@ class PostTokenItemModule extends AbstractModule
 
         $model = new TokenModel([
             'user_id' => $access->getUserId(),
-            'scheme' => 'Bearer',
+            'scheme' => $this->getScheme() ?? PYNCER_ACCESS_DEFAULT_SCHEME,
             'realm' => $this->getRealm() ?? PYNCER_ACCESS_DEFAULT_REALM,
             'token' => new Token(),
             'expiration_date_time' => $dateTime
@@ -150,6 +165,18 @@ class PostTokenItemModule extends AbstractModule
     protected function getResourceUrl(TokenModel $model): PsrUriInterface
     {
         $url = $this->request->getUri();
-        return $url->withPath($url->getPath() . '/' . $model->getToken());
+
+        $idRoutingPath = $this->getIdRoutingPath()?->getRouteDirPath() ?? '@id64';
+        if ($idRoutingPath === '@id64') {
+            $path = $url->getPath() . '/' . $model->getToken();
+        } elseif ($idRoutingPath === '@id') {
+            $path = $url->getPath() . '/' . $model->getId();
+        } else {
+            throw new UnexpectedValueException(
+                'Id routing path is not supported. (' . $idRoutingPath . ')'
+            );
+        }
+
+        return $url->withPath($path);
     }
 }

@@ -101,7 +101,7 @@ class AccessManager
 
         $tokenMapper = new TokenMapper($this->getConnection());
         $tokenModel = $tokenMapper->selectByToken(
-            $schem,
+            $scheme,
             $realm,
             $token
         );
