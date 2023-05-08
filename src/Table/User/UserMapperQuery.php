@@ -23,6 +23,13 @@ class UserMapperQuery extends AbstractRequestMapperQuery
             return true;
         }
 
+        if ($left === 'group' &&
+            in_array($right, ['super', 'admin', 'user', 'guest']) &&
+            $operator === '='
+        ) {
+            return true;
+        }
+
         return parent::isValidFilter($left, $right, $operator);
     }
 }
