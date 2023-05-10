@@ -14,7 +14,7 @@ final class TokenValidator extends AbstractValidator
     {
         parent::__construct($connection);
 
-        $this->addRule(
+        $this->addRules(
             'user_id',
             new IdRule(
                 mapper: new UserMapper($this->getConnection()),
@@ -22,28 +22,28 @@ final class TokenValidator extends AbstractValidator
             ),
         );
 
-        $this->addRule(
+        $this->addRules(
             'scheme',
             new StringRule(
                 maxLength: 50,
             ),
         );
 
-        $this->addRule(
+        $this->addRules(
             'realm',
             new StringRule(
                 maxLength: 250,
             ),
         );
 
-        $this->addRule(
+        $this->addRules(
             'token',
             new StringRule(
                 maxLength: 96,
             ),
         );
 
-        $this->addRule(
+        $this->addRules(
             'expiration_date_time',
             new DateTimeRule(
                 allowNull: true,

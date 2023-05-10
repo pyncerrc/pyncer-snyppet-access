@@ -15,7 +15,7 @@ final class UserValidator extends AbstractValidator
     {
         parent::__construct($connection);
 
-        $this->addRule(
+        $this->addRules(
             'mark',
             new StringRule(
                 maxLength: 250,
@@ -23,12 +23,12 @@ final class UserValidator extends AbstractValidator
             ),
         );
 
-        $this->addRule(
+        $this->addRules(
             'insert_date_time',
             new DateTimeRule(),
         );
 
-        $this->addRule(
+        $this->addRules(
             'update_date_time',
             new DateTimeRule(
                 allowNull: true

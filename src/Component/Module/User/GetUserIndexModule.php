@@ -5,6 +5,7 @@ use Pyncer\App\Identifier as ID;
 use Pyncer\Component\Module\AbstractGetIndexModule;
 use Pyncer\Data\Mapper\MapperInterface;
 use Pyncer\Data\MapperQuery\MapperQueryInterface;
+use Pyncer\Data\Model\ModelInterface;
 use Pyncer\Snyppet\Access\Table\User\UserMapper;
 use Pyncer\Snyppet\Access\Table\User\UserMapperQuery;
 use Pyncer\Snyppet\Access\Table\User\UserModel;

@@ -98,7 +98,7 @@ class DeleteTokenItemModule extends AbstractModule
         $filters .= 'realm eq \'' . $realm . '\'';
 
         $filters = new FiltersQueryParam($filters);
-        $tokenMapperQuery->setFilter($filters);
+        $tokenMapperQuery->setFilters($filters);
 
         return $tokenMapperQuery;
     }

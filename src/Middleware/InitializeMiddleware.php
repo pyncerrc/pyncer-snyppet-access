@@ -39,7 +39,7 @@ class InitializeMiddleware implements MiddlewareInterface
         // User mapper adaptor
         if (!$handler->has(ID::mapperAdaptor('user'))) {
             $userMapperQuery = new UserMapperQuery($connection);
-            $userMapperQuery->setFilter(new FiltersQueryParam(
+            $userMapperQuery->setFilters(new FiltersQueryParam(
                 'enabled eq true and deleted eq false'
             ));
             $userMapperAdaptor = new MapperAdaptor(
