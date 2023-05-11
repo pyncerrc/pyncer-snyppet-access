@@ -8,7 +8,7 @@ use Pyncer\Validation\Rule\DateTimeRule;
 use Pyncer\Validation\Rule\IdRule;
 use Pyncer\Validation\Rule\StringRule;
 
-final class TokenValidator extends AbstractValidator
+class TokenValidator extends AbstractValidator
 {
     public function __construct(ConnectionInterface $connection)
     {

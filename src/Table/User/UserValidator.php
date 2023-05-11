@@ -9,7 +9,7 @@ use Pyncer\Validation\Rule\EmailRule;
 use Pyncer\Validation\Rule\EnumRule;
 use Pyncer\Validation\Rule\StringRule;
 
-final class UserValidator extends AbstractValidator
+class UserValidator extends AbstractValidator
 {
     public function __construct(ConnectionInterface $connection)
     {
