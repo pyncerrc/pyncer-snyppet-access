@@ -7,6 +7,7 @@ use Pyncer\Validation\Rule\BoolRule;
 use Pyncer\Validation\Rule\DateTimeRule;
 use Pyncer\Validation\Rule\EmailRule;
 use Pyncer\Validation\Rule\EnumRule;
+use Pyncer\Validation\Rule\RequriedRule;
 use Pyncer\Validation\Rule\StringRule;
 
 class UserValidator extends AbstractValidator
@@ -25,6 +26,7 @@ class UserValidator extends AbstractValidator
 
         $this->addRules(
             'insert_date_time',
+            new RequiredRule(),
             new DateTimeRule(),
         );
 
@@ -37,6 +39,7 @@ class UserValidator extends AbstractValidator
 
         $this->addRules(
             'group',
+            new RequiredRule(),
             new EnumRule([
                 'guest', 'user', 'admin', 'super'
             ])

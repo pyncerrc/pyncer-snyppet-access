@@ -6,6 +6,7 @@ use Pyncer\Database\ConnectionInterface;
 use Pyncer\Snyppet\Access\Table\User\UserMapper;
 use Pyncer\Validation\Rule\DateTimeRule;
 use Pyncer\Validation\Rule\IdRule;
+use Pyncer\Validation\Rule\RequiredRule;
 use Pyncer\Validation\Rule\StringRule;
 
 class TokenValidator extends AbstractValidator
@@ -24,6 +25,7 @@ class TokenValidator extends AbstractValidator
 
         $this->addRules(
             'scheme',
+            new RequiredRule(),
             new StringRule(
                 maxLength: 50,
             ),
@@ -31,6 +33,7 @@ class TokenValidator extends AbstractValidator
 
         $this->addRules(
             'realm',
+            new RequiredRule(),
             new StringRule(
                 maxLength: 250,
             ),
@@ -38,6 +41,7 @@ class TokenValidator extends AbstractValidator
 
         $this->addRules(
             'token',
+            new RequiredRule(),
             new StringRule(
                 maxLength: 96,
             ),
