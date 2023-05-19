@@ -9,6 +9,8 @@ use Pyncer\Data\Validation\ValidatorInterface;
 use Pyncer\Snyppet\Access\Table\User\UserMapper;
 use Pyncer\Snyppet\Access\Table\User\UserValidator;
 
+use const PASSWORD_DEFAULT;
+
 class PostUserItemModule extends AbstractPostItemModule
 {
     protected function getResponseItemData(ModelInterface $model): array
@@ -22,6 +24,24 @@ class PostUserItemModule extends AbstractPostItemModule
         }
 
         return $data;
+    }
+
+    protected function validateItemData(array $data): array
+    {
+        if (array_key_exists('password', $data)) {
+            $data['password'] = trim(strval($data['password']));
+
+             if ($data['password'] !== '' && $data['password'] !== null) {
+                $data['password'] = password_hash(
+                    $data['password'],
+                    PASSWORD_DEFAULT
+                );
+            }
+        }
+
+        [$data, $errors] = parent::validateItemData($data);
+
+        return [$data, $errors];
     }
 
     protected function forgeValidator(): ?ValidatorInterface

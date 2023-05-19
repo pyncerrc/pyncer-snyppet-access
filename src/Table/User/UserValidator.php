@@ -42,7 +42,7 @@ class UserValidator extends AbstractValidator
             new RequiredRule(),
             new EnumRule([
                 'guest', 'user', 'admin', 'super'
-            ])
+            ]),
         );
 
         $this->addRules(
@@ -59,7 +59,7 @@ class UserValidator extends AbstractValidator
                 maxLength: 125,
                 allowNull: true,
             ),
-            new EmailRule()
+            new EmailRule(),
         );
 
         $this->addRules(
@@ -88,17 +88,17 @@ class UserValidator extends AbstractValidator
 
         $this->addRules(
             'internal',
-            new BoolRule()
+            new BoolRule(),
         );
 
         $this->addRules(
             'enabled',
-            new BoolRule()
+            new BoolRule(),
         );
 
         $this->addRules(
             'deleted',
-            new BoolRule()
+            new BoolRule(),
         );
     }
 }
