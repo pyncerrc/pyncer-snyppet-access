@@ -30,6 +30,7 @@ class PatchTokenItemModule extends AbstractModule
     use TokenElementTrait;
 
     protected ?RoutingPathInterface $idRoutingPath = null;
+    protected ?int $loginTokenExpiration = null;
 
     public function getIdRoutingPath(): ?RoutingPathInterface
     {
@@ -41,13 +42,15 @@ class PatchTokenItemModule extends AbstractModule
         return $this;
     }
 
-    protected function getPrimaryResponse(): PsrResponseInterface
+    public function getLoginTokenExpiration(): int
     {
-        $connection = $this->get(ID::DATABASE);
-        $snyppetManager = $this->get(ID::SNYPPET);
+        if ($this->loginTokenExpiraton !== null) {
+            return $this->loginTokenExpiraton;
+        }
 
         $loginTokenExpiration = PYNCER_ACCESS_LOGIN_TOKEN_EXPIRATION;
 
+        $snyppetManager = $this->get(ID::SNYPPET);
         if ($snyppetManager->has('config')) {
             $config = $this->get(ID::config());
 
@@ -56,6 +59,20 @@ class PatchTokenItemModule extends AbstractModule
                 $loginTokenExpiration
             );
         }
+
+        return $loginTokenExpiration;
+    }
+    public function setLoginTokenExpiration(?int $value): static
+    {
+        $this->loginTokenExpiration = $value;
+        return $this;
+    }
+
+    protected function getPrimaryResponse(): PsrResponseInterface
+    {
+        $connection = $this->get(ID::DATABASE);
+
+        $loginTokenExpiration = $this->getLoginTokenExpiration();
 
         $tokenMapper = new TokenMapper($connection);
         $tokenMapperQuery = $this->forgeMapperQuery();

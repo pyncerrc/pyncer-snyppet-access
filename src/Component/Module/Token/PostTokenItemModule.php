@@ -32,6 +32,9 @@ class PostTokenItemModule extends AbstractModule
     use TokenElementTrait;
 
     protected ?RoutingPathInterface $idRoutingPath = null;
+    protected ?LoginMethod $loginMethod = null;
+    protected ?bool $allowGuestAccess = null;
+    protected ?int $loginTokenExpiration = null;
 
     public function getIdRoutingPath(): ?RoutingPathInterface
     {
@@ -40,6 +43,78 @@ class PostTokenItemModule extends AbstractModule
     public function setIdRoutingPath(?RoutingPathInterface $value): static
     {
         $this->idRoutingPath = $value;
+        return $this;
+    }
+
+    public function getLoginMethod(): LoginMethod
+    {
+        $loginMethod = PYNCER_ACCESS_LOGIN_METHOD;
+
+        $snyppetManager = $this->get(ID::SNYPPET);
+        if ($snyppetManager->has('config')) {
+            $config = $this->get(ID::config());
+
+            $loginMethod = $config->getStr(
+                'user_login_method',
+                $loginMethod->value
+            );
+            $loginMethod = LoginMethod::from($loginMethod);
+        }
+
+        return $loginMethod;
+    }
+    public function setLoginMethod(?LoginMethod $value): static
+    {
+        $this->loginMethod = $value;
+
+        return $this;
+    }
+
+    public function getAllowGuestAccess(): bool
+    {
+        $allowGuestAccess = PYNCER_ACCESS_ALLOW_GUEST_ACCESS;
+
+        $snyppetManager = $this->get(ID::SNYPPET);
+        if ($snyppetManager->has('config')) {
+            $config = $this->get(ID::config());
+
+            $allowGuestAccess = $config->getBool(
+                'user_allow_guest_access',
+                $allowGuestAccess
+            );
+        }
+
+        return $allowGuestAccess;
+    }
+    public function setAllowGuestAccess(?bool $value): static
+    {
+        $this->allowGuestAccess = $value;
+        return $this;
+    }
+
+    public function getLoginTokenExpiration(): int
+    {
+        if ($this->loginTokenExpiration !== null) {
+            return $this->loginTokenExpiration;
+        }
+
+        $loginTokenExpiration = PYNCER_ACCESS_LOGIN_TOKEN_EXPIRATION;
+
+        $snyppetManager = $this->get(ID::SNYPPET);
+        if ($snyppetManager->has('config')) {
+            $config = $this->get(ID::config());
+
+            $loginTokenExpiration = $config->getInt(
+                'user_login_token_expiration',
+                $loginTokenExpiration
+            );
+        }
+
+        return $loginTokenExpiration;
+    }
+    public function setLoginTokenExpiration(?int $value): static
+    {
+        $this->loginTokenExpiration = $value;
         return $this;
     }
 
@@ -52,33 +127,12 @@ class PostTokenItemModule extends AbstractModule
     protected function getPrimaryResponse(): PsrResponseInterface
     {
         $connection = $this->get(ID::DATABASE);
-        $snyppetManager = $this->get(ID::SNYPPET);
 
         $access = $this->initializeAccessManager();
 
-        $loginMethod = PYNCER_ACCESS_LOGIN_METHOD;
-        $allowGuestAccess = PYNCER_ACCESS_ALLOW_GUEST_ACCESS;
-        $loginTokenExpiration = PYNCER_ACCESS_LOGIN_TOKEN_EXPIRATION;
-
-        if ($snyppetManager->has('config')) {
-            $config = $this->get(ID::config());
-
-            $loginMethod = $config->getStr(
-                'user_login_method',
-                $loginMethod->value
-            );
-            $loginMethod = LoginMethod::from($loginMethod);
-
-            $allowGuestAccess = $config->getBool(
-                'user_allow_guest_access',
-                $allowGuestAccess
-            );
-
-            $loginTokenExpiration = $config->getInt(
-                'user_login_token_expiration',
-                $loginTokenExpiration
-            );
-        }
+        $loginMethod = $this->getLoginMethod();
+        $allowGuestAccess = $this->getAllowGuestAccess();
+        $loginTokenExpiration = $this->getLoginTokenExpiration();
 
         $loginValue = $this->parsedBody->getStr($loginMethod->value);
         $passwordValue = $this->parsedBody->getStr('password');
