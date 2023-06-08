@@ -7,7 +7,7 @@ use Pyncer\Validation\Rule\BoolRule;
 use Pyncer\Validation\Rule\DateTimeRule;
 use Pyncer\Validation\Rule\EmailRule;
 use Pyncer\Validation\Rule\EnumRule;
-use Pyncer\Validation\Rule\RequriedRule;
+use Pyncer\Validation\Rule\RequiredRule;
 use Pyncer\Validation\Rule\StringRule;
 
 class UserValidator extends AbstractValidator

@@ -15,6 +15,7 @@ class ValueValidator extends AbstractValidator
 
         $this->addRules(
             'user_id',
+            new RequiredRule(),
             new IdRule(
                 mapper: new UserMapper($this->getConnection()),
             ),
@@ -30,6 +31,7 @@ class ValueValidator extends AbstractValidator
 
         $this->addRules(
             'key',
+            new RequiredRule(),
             new StringRule(
                 maxLength: 50,
             ),

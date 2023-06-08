@@ -44,8 +44,8 @@ class PatchTokenItemModule extends AbstractModule
 
     public function getLoginTokenExpiration(): int
     {
-        if ($this->loginTokenExpiraton !== null) {
-            return $this->loginTokenExpiraton;
+        if ($this->loginTokenExpiration !== null) {
+            return $this->loginTokenExpiration;
         }
 
         $loginTokenExpiration = PYNCER_ACCESS_LOGIN_TOKEN_EXPIRATION;
