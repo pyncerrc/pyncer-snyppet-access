@@ -46,7 +46,7 @@ class UserValidator extends AbstractValidator
         );
 
         $this->addRules(
-            'display_name',
+            'name',
             new StringRule(
                 maxLength: 50,
                 allowNull: true,

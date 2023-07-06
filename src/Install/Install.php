@@ -25,7 +25,7 @@ class Install extends AbstractInstall
             ->dateTime('insert_date_time')->default(Value::NOW)->index()
             ->dateTime('update_date_time')->null()->index()
             ->enum('group', ['guest', 'user', 'admin', 'super'])->default('user')->index()
-            ->string('display_name', 50)->null()
+            ->string('name', 50)->null()->index()
             ->string('email', 125)->null()->index()
             ->string('phone', 25)->null()->index()
             ->string('username', 50)->null()->index()

@@ -65,13 +65,13 @@ class UserModel extends AbstractModel
         return $this;
     }
 
-    public function getDisplayName(): ?string
+    public function getName(): ?string
     {
-        return $this->get('display_name');
+        return $this->get('name');
     }
-    public function setDisplayName(?string $value): static
+    public function setName(?string $value): static
     {
-        $this->set('display_name', $this->nullify($value));
+        $this->set('name', $this->nullify($value));
         return $this;
     }
 
@@ -155,7 +155,7 @@ class UserModel extends AbstractModel
             'insert_date_time' => $date,
             'update_date_time' => null,
             'group' => 'user',
-            'display_name' => null,
+            'name' => null,
             'email' => null,
             'phone' => null,
             'username' => null,
