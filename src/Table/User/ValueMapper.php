@@ -1,5 +1,5 @@
 <?php
-namespace Pyncer\Snyppet\Access\User\Table\User;
+namespace Pyncer\Snyppet\Access\Table\User;
 
 use Pyncer\Snyppet\Access\User\Table\User\ValueModel;
 use Pyncer\Data\Mapper\AbstractMapper;
