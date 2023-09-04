@@ -26,12 +26,14 @@ class PostUserItemModule extends AbstractPostItemModule
         return $data;
     }
 
-    protected function validateItemData(array $data): array
+    protected function getRequestItemData(): array
     {
+        $data = parent::getRequestItemData();
+
         if (array_key_exists('password', $data)) {
             $data['password'] = trim(strval($data['password']));
 
-             if ($data['password'] !== '' && $data['password'] !== null) {
+            if ($data['password'] !== '') {
                 $data['password'] = password_hash(
                     $data['password'],
                     PASSWORD_DEFAULT
@@ -39,9 +41,7 @@ class PostUserItemModule extends AbstractPostItemModule
             }
         }
 
-        [$data, $errors] = parent::validateItemData($data);
-
-        return [$data, $errors];
+        return $data;
     }
 
     protected function forgeValidator(): ?ValidatorInterface

@@ -4,9 +4,11 @@ namespace Pyncer\Snyppet\Access\Component\Module\User;
 use Pyncer\App\Identifier as ID;
 use Pyncer\Component\Module\AbstractPatchItemModule;
 use Pyncer\Data\Mapper\MapperInterface;
+use Pyncer\Data\MapperQuery\MapperQueryInterface;
 use Pyncer\Data\Model\ModelInterface;
 use Pyncer\Data\Validation\ValidatorInterface;
 use Pyncer\Snyppet\Access\Table\User\UserMapper;
+use Pyncer\Snyppet\Access\Table\User\UserMapperQuery;
 use Pyncer\Snyppet\Access\Table\User\UserValidator;
 
 use const PASSWORD_DEFAULT;
@@ -32,6 +34,7 @@ class PatchUserItemModule extends AbstractPatchItemModule
 
         if (array_key_exists('password', $data)) {
             $data['password'] = trim(strval($data['password']));
+
             if ($data['password'] !== '') {
                 $data['password'] = password_hash(
                     $data['password'],
@@ -53,5 +56,11 @@ class PatchUserItemModule extends AbstractPatchItemModule
     {
         $connection = $this->get(ID::DATABASE);
         return new UserMapper($connection);
+    }
+
+    protected function forgeMapperQuery(): ?MapperQueryInterface
+    {
+        $connection = $this->get(ID::DATABASE);
+        return new UserMapperQuery($connection, $this->request);
     }
 }

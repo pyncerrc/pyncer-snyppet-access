@@ -2,6 +2,7 @@
 namespace Pyncer\Snyppet\Access\Table\User;
 
 use Pyncer\Data\MapperQuery\AbstractRequestMapperQuery;
+use Pyncer\Snyppet\Access\User\Group;
 
 class UserMapperQuery extends AbstractRequestMapperQuery
 {
@@ -24,7 +25,7 @@ class UserMapperQuery extends AbstractRequestMapperQuery
         }
 
         if ($left === 'group' &&
-            in_array($right, ['super', 'admin', 'user', 'guest']) &&
+            Group::tryFrom($right) !== null &&
             $operator === '='
         ) {
             return true;
