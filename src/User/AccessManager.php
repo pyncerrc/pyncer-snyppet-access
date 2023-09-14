@@ -14,7 +14,7 @@ use Pyncer\Snyppet\Access\Table\Token\TokenMapper;
 use Pyncer\Snyppet\Access\Table\Token\TokenModel;
 use Pyncer\Snyppet\Access\Table\User\UserMapper;
 use Pyncer\Snyppet\Access\Table\User\UserModel;
-use Pyncer\Snyppet\Access\User\Group;
+use Pyncer\Snyppet\Access\User\UserGroup;
 use Pyncer\Snyppet\Access\User\LoginMethod;
 use Pyncer\Snyppet\Access\User\PasswordManager;
 
@@ -159,7 +159,9 @@ class AccessManager
 
     public function logout(): bool
     {
-        if ($this->userModel && $this->userModel->getGroup() !== Group::GUEST) {
+        if ($this->userModel &&
+            $this->userModel->getGroup() !== UserGroup::GUEST
+        ) {
             $this->userModel = null;
             return true;
         }
@@ -196,7 +198,7 @@ class AccessManager
             if (!$userModel ||
                 !$userModel->getEnabled() ||
                 $userModel->getDeleted() ||
-                $userModel->getGroup() !== Group::GUEST
+                $userModel->getGroup() !== UserGroup::GUEST
             ) {
                 throw new UnexpectedValueException(
                     'Expected guest user model.'
@@ -216,7 +218,7 @@ class AccessManager
 
     public function isGuest(): bool
     {
-        return ($this->getUser()->getGroup() === Group::GUEST);
+        return ($this->getUser()->getGroup() === UserGroup::GUEST);
     }
 
     public function isUser(): bool
@@ -225,7 +227,7 @@ class AccessManager
             return true;
         }
 
-        return ($this->getUser()->getGroup() === Group::USER);
+        return ($this->getUser()->getGroup() === UserGroup::USER);
     }
 
     public function isAdmin(): bool
@@ -234,11 +236,11 @@ class AccessManager
             return true;
         }
 
-        return ($this->getUser()->getGroup() === Group::ADMIN);
+        return ($this->getUser()->getGroup() === UserGroup::ADMIN);
     }
 
     public function isSuper(): bool
     {
-        return ($this->getUser()->getGroup() === Group::SUPER);
+        return ($this->getUser()->getGroup() === UserGroup::SUPER);
     }
 }

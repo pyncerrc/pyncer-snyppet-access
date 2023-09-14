@@ -1,7 +1,7 @@
 <?php
 namespace Pyncer\Snyppet\Access\User;
 
-enum Group: string
+enum UserGroup: string
 {
     case GUEST = 'guest';
     case SUPER = 'super';

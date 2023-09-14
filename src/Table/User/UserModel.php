@@ -4,7 +4,7 @@ namespace Pyncer\Snyppet\Access\Table\User;
 use DateTime;
 use DateTimeInterface;
 use Pyncer\Data\Model\AbstractModel;
-use Pyncer\Snyppet\Access\User\Group;
+use Pyncer\Snyppet\Access\User\UserGroup;
 
 use function Pyncer\date_time as pyncer_date_time;
 
@@ -50,14 +50,14 @@ class UserModel extends AbstractModel
         return $this;
     }
 
-    public function getGroup(): Group
+    public function getGroup(): UserGroup
     {
         $value = $this->get('group');
-        return Group::from($value);
+        return UserGroup::from($value);
     }
-    public function setGroup(string|Group $value): static
+    public function setGroup(string|UserGroup $value): static
     {
-        if ($value instanceof Group) {
+        if ($value instanceof UserGroup) {
             $value = $value->value;
         }
 
