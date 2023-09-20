@@ -42,7 +42,7 @@ class DeleteTokenItemModule extends AbstractModule
 
         $idRoutingPath = $this->getIdRoutingPath()?->getRouteDirPath() ?? '@id64';
         if ($idRoutingPath === '@id64') {
-            $id64 = $this->queryParams->getStr(
+            $id64 = $this->queryParams->getString(
                 $this->getIdRoutingPath()?->getQueryName() ?? 'id64',
                 null
             );

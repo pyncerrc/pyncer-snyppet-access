@@ -47,7 +47,7 @@ class GetTokenItemModule extends AbstractModule
 
         $idRoutingPath = $this->getIdRoutingPath()?->getRouteDirPath() ?? '@id64';
         if ($idRoutingPath === '@id64') {
-            $id64 = $this->queryParams->getStr(
+            $id64 = $this->queryParams->getString(
                 $this->getIdRoutingPath()?->getQueryName() ?? 'id64',
                 null
             );
@@ -123,7 +123,7 @@ class GetTokenItemModule extends AbstractModule
 
         // Options
         $options = new OptionsQueryParam(
-            $this->queryParams->getStr('$options')
+            $this->queryParams->getString('$options')
         );
         $tokenMapperQuery->setOptions($options);
 

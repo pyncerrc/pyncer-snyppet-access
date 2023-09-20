@@ -54,7 +54,7 @@ class PostTokenItemModule extends AbstractModule
         if ($snyppetManager->has('config')) {
             $config = $this->get(ID::config());
 
-            $loginMethod = $config->getStr(
+            $loginMethod = $config->getString(
                 'user_login_method',
                 $loginMethod->value
             );
@@ -134,8 +134,8 @@ class PostTokenItemModule extends AbstractModule
         $allowGuestAccess = $this->getAllowGuestAccess();
         $loginTokenExpiration = $this->getLoginTokenExpiration();
 
-        $loginValue = $this->parsedBody->getStr($loginMethod->value);
-        $passwordValue = $this->parsedBody->getStr('password');
+        $loginValue = $this->parsedBody->getString($loginMethod->value);
+        $passwordValue = $this->parsedBody->getString('password');
 
         if ($loginValue !== '' || $passwordValue  !== '') {
             $loginResult = $access->loginWithCredentials(
@@ -186,7 +186,7 @@ class PostTokenItemModule extends AbstractModule
             'expiration_date_time' => $expirationDateTime,
         ];
 
-        $options = new OptionsQueryParam($this->queryParams->getStr('$options'));
+        $options = new OptionsQueryParam($this->queryParams->getString('$options'));
         if ($options->hasOption('include-user')) {
             $userModel = $access->getUser();
 
