@@ -21,4 +21,48 @@ class ValueMapper extends AbstractMapper
     {
         return ($model instanceof ValueModel);
     }
+
+    public function selectAllPreloaded(
+        int $userId,
+        ?MapperQueryInterface $mapperQuery = null
+    ): MapperResultInterface
+    {
+        return $this->selectAllByColumns(
+            [
+                'user_id' => $userId,
+                'preload' => true
+            ],
+            $mapperQuery
+        );
+    }
+
+    public function selectByKey(
+        int $userId,
+        string $key,
+        ?MapperQueryInterface $mapperQuery = null
+    ): ?ModelInterface
+    {
+        return $this->selectByColumns(
+            [
+                'user_id' => $userId,
+                'key' => $key
+            ],
+            $mapperQuery
+        );
+    }
+
+    public function selectAllByKeys(
+        int $userId,
+        array $keys,
+        ?MapperQueryInterface $mapperQuery = null
+    ): MapperResultInterface
+    {
+        return $this->selectAllByColumns(
+            [
+                'user_id' => $userId,
+                'key' => $keys
+            ],
+            $mapperQuery
+        );
+    }
 }
