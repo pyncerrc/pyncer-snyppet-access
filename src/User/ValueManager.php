@@ -1,8 +1,8 @@
 <?php
 namespace Pyncer\Snyppet\Access\User;
 
-use Pyncer\Snyppet\Value\Table\Value\ValueMapper;
-use Pyncer\Snyppet\Value\Table\Value\ValueModel;
+use Pyncer\Snyppet\Access\Table\User\ValueMapper;
+use Pyncer\Snyppet\Access\Table\User\ValueModel;
 use Pyncer\Database\ConnectionInterface;
 use Pyncer\Database\ConnectionTrait;
 use Pyncer\Utility\Params;
