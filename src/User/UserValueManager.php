@@ -10,7 +10,7 @@ use Pyncer\Utility\Params;
 use function Pyncer\Array\data_explode as pyncer_data_explode;
 use function Pyncer\Array\data_implode as pyncer_data_implode;
 
-class ValueManager extends Params
+class UserValueManager extends Params
 {
     use ConnectionTrait;
 

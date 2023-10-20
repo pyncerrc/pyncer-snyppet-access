@@ -9,7 +9,7 @@ use Pyncer\Database\ConnectionInterface;
 use Pyncer\Exception\UnexpectedValueException;
 use Pyncer\Http\Server\MiddlewareInterface;
 use Pyncer\Http\Server\RequestHandlerInterface;
-use Pyncer\Snyppet\Access\User\ValueManager;
+use Pyncer\Snyppet\Access\User\UserValueManager;
 
 class UserMiddleware implements MiddlewareInterface
 {
@@ -55,7 +55,7 @@ class UserMiddleware implements MiddlewareInterface
 
         $handler->set(ID::user(), $user);
 
-        $valueManager = new ValueManager($connection, $user->getId());
+        $valueManager = new UserValueManager($connection, $user->getId());
         $valueManager->preload();
 
         $handler->set(ID::user('value'), $valueManager);
