@@ -4,6 +4,7 @@ namespace Pyncer\Snyppet\Access\Table\User;
 use Pyncer\Snyppet\Access\User\Table\User\UserMapper;
 use Pyncer\Data\Validation\AbstractValidator;
 use Pyncer\Database\ConnectionInterface;
+use Pyncer\Validation\Rule\BoolRule;
 use Pyncer\Validation\Rule\IdRule;
 use Pyncer\Validation\Rule\StringRule;
 
@@ -22,14 +23,6 @@ class ValueValidator extends AbstractValidator
         );
 
         $this->addRules(
-            'group',
-            new StringRule(
-                maxLength: 50,
-                allowNull: true,
-            ),
-        );
-
-        $this->addRules(
             'key',
             new RequiredRule(),
             new StringRule(
@@ -39,10 +32,15 @@ class ValueValidator extends AbstractValidator
 
         $this->addRules(
             'value',
+            new RequiredRule(),
             new StringRule(
-                maxLength: 250,
-                allowNull: true,
+                maxLength: 16000,
             ),
+        );
+
+        $this->addRules(
+            'preload',
+            new BoolRule(),
         );
     }
 }

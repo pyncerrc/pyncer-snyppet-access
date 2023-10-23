@@ -15,16 +15,6 @@ class ValueModel extends AbstractModel
         return $this;
     }
 
-    public function getGroup(): ?string
-    {
-        return $this->get('group');
-    }
-    public function setGroup(?string $value): static
-    {
-        $this->set('group', $this->nullify($value));
-        return $this;
-    }
-
     public function getKey(): string
     {
         return $this->get('key');
@@ -45,14 +35,24 @@ class ValueModel extends AbstractModel
         return $this;
     }
 
+    public function getPreload(): bool
+    {
+        return $this->get('preload');
+    }
+    public function setPreload(bool $value): static
+    {
+        $this->set('preload', $value);
+        return $this;
+    }
+
     public static function getDefaultData(): array
     {
         return [
             'id' => 0,
             'user_id' => 0,
-            'group' => null,
             'key' => '',
             'value' => null,
+            'preload' => false,
         ];
     }
 }
