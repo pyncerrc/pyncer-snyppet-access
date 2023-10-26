@@ -26,7 +26,7 @@ class PasswordManager
     {
         $salt = $this->userModel->getPassword();
 
-        if (password_verify($password, $salt)) {
+        if ($salt !== null && password_verify($password, $salt)) {
             return true;
         }
 
