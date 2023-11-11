@@ -51,7 +51,8 @@ class UserMiddleware implements MiddlewareInterface
             return $handler->next($request, $response);
         }
 
-        ID::register('user');
+        ID::register(ID::user());
+        ID::register(ID::user('value'));
 
         $handler->set(ID::user(), $user);
 
