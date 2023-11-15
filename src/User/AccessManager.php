@@ -187,13 +187,7 @@ class AccessManager
     public function getUser(): UserModel
     {
         if ($this->userModel === null) {
-            $userMapper = $this->forgeUserMapper();
-            $userMapperQuery = $this->forgeUserMapperQuery();
-
-            $userModel = $userMapper->selectById(
-                PYNCER_ACCESS_USER_GUEST_ID,
-                $userMapperQuery
-            );
+            $userModel = $this->getGuestUser();
 
             if (!$userModel ||
                 !$userModel->getEnabled() ||
@@ -209,6 +203,17 @@ class AccessManager
         }
 
         return $this->userModel;
+    }
+
+    protected function getGuestUser(): UserModel
+    {
+        $userMapper = $this->forgeUserMapper();
+        $userMapperQuery = $this->forgeUserMapperQuery();
+
+        return $userMapper->selectById(
+            PYNCER_ACCESS_USER_GUEST_ID,
+            $userMapperQuery
+        );
     }
 
     public function getUserId(): int

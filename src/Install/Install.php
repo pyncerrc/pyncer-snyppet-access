@@ -5,6 +5,9 @@ use Pyncer\Database\Table\Column\IntSize;
 use Pyncer\Database\Table\ReferentialAction;
 use Pyncer\Database\Value;
 use Pyncer\Snyppet\AbstractInstall;
+use Pyncer\Snyppet\Access\Table\User\UserMapper;
+use Pyncer\Snyppet\Access\Table\User\UserModel;
+use Pyncer\Snyppet\Access\User\UserGroup;
 use Pyncer\Snyppet\Config\ConfigManager;
 
 use const Pyncer\Snyppet\Access\ALLOW_GUEST_ACCESS as PYNCER_ACCESS_ALLOW_GUEST_ACCESS;
@@ -60,6 +63,19 @@ class Install extends AbstractInstall
                 ->deleteAction(ReferentialAction::CASCADE)
                 ->updateAction(ReferentialAction::CASCADE)
             ->execute();
+
+        $userMapper = new UserMapper($connection);
+        $userModel = new UserModel();
+        $userModel->setGroup(UserGroup::GUEST);
+        $userModel->setName('Guest');
+        $userMapper->insert($userModel);
+
+        $userMapper = new UserMapper($connection);
+        $userModel = new UserModel();
+        $userModel->setGroup(UserGroup::SUPER);
+        $userModel->setName('Super');
+        $userModel->setInternal(true);
+        $userMapper->insert($userModel);
 
         return true;
     }

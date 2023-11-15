@@ -160,7 +160,7 @@ class UserModel extends AbstractModel
             'phone' => null,
             'username' => null,
             'password' => null,
-            'internal' => true,
+            'internal' => false,
             'enabled' => true,
             'deleted' => false,
         ];
