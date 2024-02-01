@@ -64,13 +64,13 @@ class Install extends AbstractInstall
                 ->updateAction(ReferentialAction::CASCADE)
             ->execute();
 
-        $userMapper = new UserMapper($connection);
+        $userMapper = new UserMapper($this->connection);
         $userModel = new UserModel();
         $userModel->setGroup(UserGroup::GUEST);
         $userModel->setName('Guest');
         $userMapper->insert($userModel);
 
-        $userMapper = new UserMapper($connection);
+        $userMapper = new UserMapper($this->connection);
         $userModel = new UserModel();
         $userModel->setGroup(UserGroup::SUPER);
         $userModel->setName('Super');
