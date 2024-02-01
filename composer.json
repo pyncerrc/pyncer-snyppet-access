@@ -12,6 +12,7 @@
         "pyncer/component": "^1.0.1",
         "pyncer/data": "^1.1.0",
         "pyncer/database": "^1.0.1",
+        "pyncer/exception": "^1.0",
         "pyncer/http": "^1.0.3",
         "pyncer/routing": "^1.1.0",
         "pyncer/snyppet": "^1.1.0",
