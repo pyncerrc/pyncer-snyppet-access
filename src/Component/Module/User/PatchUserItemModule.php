@@ -48,6 +48,15 @@ class PatchUserItemModule extends AbstractPatchItemModule
         return $this;
     }
 
+    protected function getResponseItemData(ModelInterface $model): array
+    {
+        $data = parent::getResponseItemData($model);
+
+        unset($data['password'], $data['password1'], $data['password2']);
+
+        return $data;
+    }
+
     protected function getRequiredItemData(): array
     {
         $data = parent::getRequiredItemData();

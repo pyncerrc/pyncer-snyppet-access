@@ -48,7 +48,7 @@ class PostUserItemModule extends AbstractPostItemModule
     {
         $data = parent::getResponseItemData($model);
 
-        unset($data['password']);
+        unset($data['password'], $data['password1'], $data['password2']);
 
         return $data;
     }
