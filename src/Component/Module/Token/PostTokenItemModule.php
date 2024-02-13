@@ -48,6 +48,10 @@ class PostTokenItemModule extends AbstractModule
 
     public function getLoginMethod(): LoginMethod
     {
+        if ($this->loginMethod !== null) {
+            return $this->loginMethod;
+        }
+
         $loginMethod = PYNCER_ACCESS_LOGIN_METHOD;
 
         $snyppetManager = $this->get(ID::SNYPPET);
@@ -72,6 +76,10 @@ class PostTokenItemModule extends AbstractModule
 
     public function getAllowGuestAccess(): bool
     {
+        if ($this->allowGuestAccess !== null) {
+            return $this->allowGuestAccess;
+        }
+
         $allowGuestAccess = PYNCER_ACCESS_ALLOW_GUEST_ACCESS;
 
         $snyppetManager = $this->get(ID::SNYPPET);
