@@ -11,9 +11,20 @@ use Pyncer\Snyppet\Access\User\UserGroup;
 use Pyncer\Snyppet\Config\ConfigManager;
 
 use const Pyncer\Snyppet\Access\ALLOW_GUEST_ACCESS as PYNCER_ACCESS_ALLOW_GUEST_ACCESS;
-use const Pyncer\Snyppet\Access\DEFAULT_REALM as PYNCER_ACCESS_DEFAULT_REALM;
 use const Pyncer\Snyppet\Access\LOGIN_METHOD as PYNCER_ACCESS_LOGIN_METHOD;
 use const Pyncer\Snyppet\Access\LOGIN_TOKEN_EXPIRATION as PYNCER_ACCESS_LOGIN_TOKEN_EXPIRATION;
+
+use const Pyncer\Snyppet\Access\PASSWORD_CONFIRM_NEW as PYNCER_ACCESS_PASSWORD_CONFIRM_NEW;
+use const Pyncer\Snyppet\Access\PASSWORD_CONFIRM_OLD as PYNCER_ACCESS_PASSWORD_CONFIRM_OLD;
+use const Pyncer\Snyppet\Access\PASSWORD_MIN_LENGTH as PYNCER_ACCESS_PASSWORD_MIN_LENGTH;
+use const Pyncer\Snyppet\Access\PASSWORD_MAX_LENGTH as PYNCER_ACCESS_PASSWORD_MAX_LENGTH;
+use const Pyncer\Snyppet\Access\PASSWORD_REQUIRE_NUMERIC_CHARACTERS as PYNCER_ACCESS_PASSWORD_REQUIRE_NUMERIC_CHARACTERS;
+use const Pyncer\Snyppet\Access\PASSWORD_REQUIRE_ALPHA_CHARACTERS as PYNCER_ACCESS_PASSWORD_REQUIRE_ALPHA_CHARACTERS;
+use const Pyncer\Snyppet\Access\PASSWORD_REQUIRE_LOWER_CASE_CHARACTERS as PYNCER_ACCESS_PASSWORD_REQUIRE_LOWER_CASE_CHARACTERS;
+use const Pyncer\Snyppet\Access\PASSWORD_REQUIRE_UPPER_CASE_CHARACTERS as PYNCER_ACCESS_PASSWORD_REQUIRE_UPPER_CASE_CHARACTERS;
+use const Pyncer\Snyppet\Access\PASSWORD_REQUIRE_SPECIAL_CHARACTERS as PYNCER_ACCESS_PASSWORD_REQUIRE_SPECIAL_CHARACTERS;
+use const Pyncer\Snyppet\Access\PASSWORD_SPECIAL_CHARACTERS as PYNCER_ACCESS_PASSWORD_SPECIAL_CHARACTERS;
+use const Pyncer\Snyppet\Access\PASSWORD_ALLOW_WHITESPACE as PYNCER_ACCESS_PASSWORD_ALLOW_WHITESPACE;
 
 class Install extends AbstractInstall
 {
@@ -157,6 +168,72 @@ class Install extends AbstractInstall
             $config->save('user_login_token_expiration');
         }
 
+        if (!$config->has('password_confirm_new')) {
+            $config->set('password_confirm_new', PYNCER_ACCESS_PASSWORD_CONFIRM_NEW);
+            $config->setPreload('password_confirm_new', true);
+            $config->save('password_confirm_new');
+        }
+
+        if (!$config->has('password_confirm_old')) {
+            $config->set('password_confirm_old', PYNCER_ACCESS_PASSWORD_CONFIRM_OLD);
+            $config->setPreload('password_confirm_old', true);
+            $config->save('password_confirm_old');
+        }
+
+        if (!$config->has('password_min_length')) {
+            $config->set('password_min_length', PYNCER_ACCESS_PASSWORD_MIN_LENGTH);
+            $config->setPreload('password_min_length', true);
+            $config->save('password_min_length');
+        }
+
+        if (!$config->has('password_max_length')) {
+            $config->set('password_max_length', PYNCER_ACCESS_PASSWORD_MAX_LENGTH);
+            $config->setPreload('password_max_length', true);
+            $config->save('password_max_length');
+        }
+
+        if (!$config->has('password_require_numeric_characters')) {
+            $config->set('password_require_numeric_characters', PYNCER_ACCESS_PASSWORD_REQUIRE_NUMERIC_CHARACTERS);
+            $config->setPreload('password_require_numeric_characters', true);
+            $config->save('password_require_numeric_characters');
+        }
+
+        if (!$config->has('password_require_alpha_characters')) {
+            $config->set('password_require_alpha_characters', PYNCER_ACCESS_PASSWORD_REQUIRE_ALPHA_CHARACTERS);
+            $config->setPreload('password_require_alpha_characters', true);
+            $config->save('password_require_alpha_characters');
+        }
+
+        if (!$config->has('password_require_lower_case_characters')) {
+            $config->set('password_require_lower_case_characters', PYNCER_ACCESS_PASSWORD_REQUIRE_LOWER_CASE_CHARACTERS);
+            $config->setPreload('password_require_lower_case_characters', true);
+            $config->save('password_require_lower_case_characters');
+        }
+
+        if (!$config->has('password_require_upper_case_characters')) {
+            $config->set('password_require_upper_case_characters', PYNCER_ACCESS_PASSWORD_REQUIRE_UPPER_CASE_CHARACTERS);
+            $config->setPreload('password_require_upper_case_characters', true);
+            $config->save('password_require_upper_case_characters');
+        }
+
+        if (!$config->has('password_require_special_characters')) {
+            $config->set('password_require_special_characters', pyncer_access_password_require_special_characters);
+            $config->setpreload('password_require_special_characters', true);
+            $config->save('password_require_special_characters');
+        }
+
+        if (!$config->has('password_special_characters')) {
+            $config->set('password_special_characters', PYNCER_ACCESS_PASSWORD_SPECIAL_CHARACTERS);
+            $config->setPreload('password_special_characters', true);
+            $config->save('password_special_characters');
+        }
+
+        if (!$config->has('password_allow_whitespace')) {
+            $config->set('password_allow_whitespace', PYNCER_ACCESS_PASSWORD_ALLOW_WHITESPACE);
+            $config->setPreload('password_allow_whitespace', true);
+            $config->save('password_allow_whitespace');
+        }
+
         return true;
     }
 
@@ -177,6 +254,61 @@ class Install extends AbstractInstall
         if (!$config->has('user_login_token_expiration')) {
             $config->set('user_login_token_expiration', null);
             $config->save('user_login_token_expiration');
+        }
+
+        if (!$config->has('password_confirm_new')) {
+            $config->set('password_confirm_new', null);
+            $config->save('password_confirm_new');
+        }
+
+        if (!$config->has('password_confirm_old')) {
+            $config->set('password_confirm_old', null);
+            $config->save('password_confirm_old');
+        }
+
+        if (!$config->has('password_min_length')) {
+            $config->set('password_min_length', null);
+            $config->save('password_min_length');
+        }
+
+        if (!$config->has('password_max_length')) {
+            $config->set('password_max_length', null);
+            $config->save('password_max_length');
+        }
+
+        if (!$config->has('password_require_numeric_characters')) {
+            $config->set('password_require_numeric_characters', null);
+            $config->save('password_require_numeric_characters');
+        }
+
+        if (!$config->has('password_require_alpha_characters')) {
+            $config->set('password_require_alpha_characters', null);
+            $config->save('password_require_alpha_characters');
+        }
+
+        if (!$config->has('password_require_lower_case_characters')) {
+            $config->set('password_require_lower_case_characters', null);
+            $config->save('password_require_lower_case_characters');
+        }
+
+        if (!$config->has('password_require_upper_case_characters')) {
+            $config->set('password_require_upper_case_characters', null);
+            $config->save('password_require_upper_case_characters');
+        }
+
+        if (!$config->has('password_require_special_characters')) {
+            $config->set('password_require_special_characters', null);
+            $config->save('password_require_special_characters');
+        }
+
+        if (!$config->has('password_special_characters')) {
+            $config->set('password_special_characters', null);
+            $config->save('password_special_characters');
+        }
+
+        if (!$config->has('password_allow_whitespace')) {
+            $config->set('password_allow_whitespace', null);
+            $config->save('password_allow_whitespace');
         }
 
         return true;

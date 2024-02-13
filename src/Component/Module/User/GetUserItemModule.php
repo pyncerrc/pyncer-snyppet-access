@@ -33,6 +33,6 @@ class GetUserItemModule extends AbstractGetItemModule
     protected function forgeMapperQuery(): ?MapperQueryInterface
     {
         $connection = $this->get(ID::DATABASE);
-        return new UserMapperQuery($connection, $this->request);
+        return new UserMapperQuery($connection);
     }
 }
