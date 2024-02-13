@@ -1,6 +1,7 @@
 <?php
 namespace Pyncer\Snyppet\Access;
 
+use Pyncer\Validation\Rule\PasswordRule;
 use Pyncer\Snyppet\Access\User\LoginMethod;
 
 defined('Pyncer\Snyppet\Access\ALLOW_GUEST_ACCESS') or define('Pyncer\Snyppet\Access\ALLOW_GUEST_ACCESS', false);
@@ -19,5 +20,5 @@ defined('Pyncer\Snyppet\Access\PASSWORD_REQUIRE_ALPHA_CHARACTERS') or define('Py
 defined('Pyncer\Snyppet\Access\PASSWORD_REQUIRE_LOWER_CASE_CHARACTERS') or define('Pyncer\Snyppet\Access\PASSWORD_REQUIRE_LOWER_CASE_CHARACTERS', false);
 defined('Pyncer\Snyppet\Access\PASSWORD_REQUIRE_UPPER_CASE_CHARACTERS') or define('Pyncer\Snyppet\Access\PASSWORD_REQUIRE_UPPER_CASE_CHARACTERS', false);
 defined('Pyncer\Snyppet\Access\PASSWORD_REQUIRE_SPECIAL_CHARACTERS') or define('Pyncer\Snyppet\Access\PASSWORD_REQUIRE_SPECIAL_CHARACTERS', false);
-defined('Pyncer\Snyppet\Access\PASSWORD_SPECIAL_CHARACTERS') or define('Pyncer\Snyppet\Access\PASSWORD_SPECIAL_CHARACTERS', '+=-_!@#$%^&*()?<>{}[]"\'.,`~|\\/:;');
+defined('Pyncer\Snyppet\Access\PASSWORD_SPECIAL_CHARACTERS') or define('Pyncer\Snyppet\Access\PASSWORD_SPECIAL_CHARACTERS', PasswordRule::SPECIAL_CHARACTERS);
 defined('Pyncer\Snyppet\Access\PASSWORD_ALLOW_WHITESPACE') or define('Pyncer\Snyppet\Access\PASSWORD_ALLOW_WHITESPACE', false);

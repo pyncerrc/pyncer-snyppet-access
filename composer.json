@@ -17,7 +17,7 @@
         "pyncer/routing": "^1.1.0",
         "pyncer/snyppet": "^1.1.0",
         "pyncer/utility": "^1.0.1",
-        "pyncer/validation": "^1.1.0"
+        "pyncer/validation": "^1.2.2"
     },
     "autoload": {
         "files": ["src/autoload.php"],
