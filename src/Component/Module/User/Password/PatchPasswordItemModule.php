@@ -11,6 +11,9 @@ use Pyncer\Snyppet\Access\Table\User\UserMapper;
 use Pyncer\Snyppet\Access\Table\User\UserMapperQuery;
 use Pyncer\Snyppet\Access\User\PasswordConfig;
 
+use function Pyncer\date_time as pyncer_date_time;
+use function Pyncer\String\nullify as pyncer_string_nullify;
+
 use const PASSWORD_DEFAULT;
 
 class PatchPasswordItemModule extends AbstractPatchItemModule
