@@ -58,7 +58,7 @@ class AccessManager
         $userModel = $this->getUserFromLogin($login, $loginMethod);
 
         if ($userModel === null) {
-            return null;
+            return false;
         }
 
         $password = trim($password);

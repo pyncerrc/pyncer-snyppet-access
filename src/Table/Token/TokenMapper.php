@@ -38,9 +38,9 @@ class TokenMapper extends AbstractMapper
     {
         return $this->selectByColumns(
             [
-            'scheme' => $scheme,
-            'realm' => $realm,
-            'token' => $token
+                'scheme' => $scheme,
+                'realm' => $realm,
+                'token' => $token
             ],
             $mapperQuery
         );

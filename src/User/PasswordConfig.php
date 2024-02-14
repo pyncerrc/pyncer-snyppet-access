@@ -1,5 +1,5 @@
 <?php
-namespace Pyncer\Snyppet\Access\User
+namespace Pyncer\Snyppet\Access\User;
 
 use Pyncer\Utility\ParamsInterface;
 use Pyncer\Validation\Rule\PasswordRule;
@@ -43,7 +43,7 @@ class PasswordConfig
         $minLength = PYNCER_ACCESS_PASSWORD_MIN_LENGTH;
 
         if ($this->config !== null) {
-            $minLength = $config->getString(
+            $minLength = $this->config->getString(
                 'password_min_length',
                 $minLength
             );
@@ -66,7 +66,7 @@ class PasswordConfig
         $maxLength = PYNCER_ACCESS_PASSWORD_MAX_LENGTH;
 
         if ($this->config !== null) {
-            $maxLength = $config->getString(
+            $maxLength = $this->config->getString(
                 'password_max_length',
                 $maxLength
             );

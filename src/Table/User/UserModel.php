@@ -147,12 +147,12 @@ class UserModel extends AbstractModel
 
     public static function getDefaultData(): array
     {
-        $date = pyncer_date_time()->format(PYNCER_DATE_TIME_FORMAT);
+        $dateTime = pyncer_date_time()->format(PYNCER_DATE_TIME_FORMAT);
 
         return [
             'id' => 0,
             'mark' => null,
-            'insert_date_time' => $date,
+            'insert_date_time' => $dateTime,
             'update_date_time' => null,
             'group' => 'user',
             'name' => null,

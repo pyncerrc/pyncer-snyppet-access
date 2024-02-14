@@ -14,6 +14,7 @@ use Pyncer\Exception\UnexpectedValueException;
 use Pyncer\Http\Message\JsonResponse;
 use Pyncer\Http\Message\Response;
 use Pyncer\Http\Message\Status;
+use Pyncer\Routing\Path\RoutingPathInterface;
 use Pyncer\Snyppet\Access\Component\Forge\Token\TokenElementTrait;
 use Pyncer\Snyppet\Access\Table\Token\TokenMapper;
 use Pyncer\Snyppet\Access\Table\Token\TokenMapperQuery;
