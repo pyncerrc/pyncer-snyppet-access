@@ -7,8 +7,13 @@ use Pyncer\Validation\Rule\BoolRule;
 use Pyncer\Validation\Rule\DateTimeRule;
 use Pyncer\Validation\Rule\EmailRule;
 use Pyncer\Validation\Rule\EnumRule;
+use Pyncer\Validation\Rule\PhoneRule;
 use Pyncer\Validation\Rule\RequiredRule;
 use Pyncer\Validation\Rule\StringRule;
+
+use const Pyncer\Snyppet\Access\USER_PHONE_ALLOW_E164 as PYNCER_ACCESS_USER_PHONE_ALLOW_E164;
+use const Pyncer\Snyppet\Access\USER_PHONE_ALLOW_NANP as PYNCER_ACCESS_USER_PHONE_ALLOW_NANP;
+use const Pyncer\Snyppet\Access\USER_PHONE_ALLOW_FORMATTING as PYNCER_ACCESS_USER_PHONE_ALLOW_FORMATTING;
 
 class UserValidator extends AbstractValidator
 {
@@ -55,15 +60,20 @@ class UserValidator extends AbstractValidator
 
         $this->addRules(
             'email',
+            new EmailRule(),
             new StringRule(
                 maxLength: 125,
                 allowNull: true,
             ),
-            new EmailRule(),
         );
 
         $this->addRules(
             'phone',
+            new PhoneRule(
+                allowNanp: PYNCER_ACCESS_USER_PHONE_ALLOW_NANP,
+                allowE164: PYNCER_ACCESS_USER_PHONE_ALLOW_E164,
+                allowFormatting: PYNCER_ACCESS_USER_PHONE_ALLOW_FORMATTING,
+            ),
             new StringRule(
                 maxLength: 25,
                 allowNull: true,

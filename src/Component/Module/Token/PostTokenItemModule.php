@@ -136,7 +136,7 @@ class PostTokenItemModule extends AbstractModule
     {
         $connection = $this->get(ID::DATABASE);
 
-        $access = $this->initializeAccessManager();
+        $accessManager = $this->initializeAccessManager();
 
         $loginMethod = $this->getLoginMethod();
         $allowGuestAccess = $this->getAllowGuestAccess();
@@ -146,7 +146,7 @@ class PostTokenItemModule extends AbstractModule
         $passwordValue = $this->parsedBody->getString('password');
 
         if ($loginValue !== '' || $passwordValue  !== '') {
-            $loginResult = $access->loginWithCredentials(
+            $loginResult = $accessManager->loginWithCredentials(
                 $loginValue,
                 $passwordValue,
                 $loginMethod
@@ -162,7 +162,7 @@ class PostTokenItemModule extends AbstractModule
             }
         }
 
-        if ($access->isGuest() && !$allowGuestAccess) {
+        if ($accessManager->isGuest() && !$allowGuestAccess) {
             return new JsonResponse(
                 Status::CLIENT_ERROR_422_UNPROCESSABLE_ENTITY,
                 [
@@ -176,7 +176,7 @@ class PostTokenItemModule extends AbstractModule
         $dateTime->add(new DateInterval('PT' . $loginTokenExpiration . 'S'));
 
         $model = new TokenModel([
-            'user_id' => $access->getUserId(),
+            'user_id' => $accessManager->getUserId(),
             'scheme' => $this->getScheme() ?? PYNCER_ACCESS_DEFAULT_SCHEME,
             'realm' => $this->getRealm() ?? PYNCER_ACCESS_DEFAULT_REALM,
             'token' => new Token(),
@@ -196,7 +196,7 @@ class PostTokenItemModule extends AbstractModule
 
         $options = new OptionsQueryParam($this->queryParams->getString('$options'));
         if ($options->hasOption('include-user')) {
-            $userModel = $access->getUser();
+            $userModel = $accessManager->getUser();
 
             $data['user'] = $this->getResponseUserData($userModel);
         }

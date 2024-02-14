@@ -16,11 +16,7 @@ class GetUserIndexModule extends AbstractGetIndexModule
     {
         $data = parent::getResponseItemData($model);
 
-        if (array_key_exists('password', $data) &&
-            $data['password'] !== null
-        ) {
-            $data['password'] = '';
-        }
+        unset($data['password']);
 
         return $data;
     }

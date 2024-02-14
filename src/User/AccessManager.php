@@ -55,27 +55,13 @@ class AccessManager
     {
         $this->userModel = null;
 
-        $login = trim($login);
+        $userModel == $this>getUserFromLogin($login, $loginMethod);
+
+        if ($userModel === null) {
+            return null;
+        }
+
         $password = trim($password);
-
-        if ($login === '') {
-            return false;
-        }
-
-        $userMapper = $this->forgeUserMapper();
-        $userMapperQuery = $this->forgeUserMapperQuery();
-
-        $userModel = match ($loginMethod) {
-            LoginMethod::EMAIL => $userMapper->selectByEmail($login, $userMapperQuery),
-            LoginMethod::USERNAME => $userMapper->selectByUsername($login, $userMapperQuery),
-            LoginMethod::PHONE => $userMapper->selectByPhone($login, $userMapperQuery),
-            default => $userMapper->selectByEmail($login, $userMapperQuery),
-        };
-
-        if (!$userModel || !$userModel->getEnabled() || $userModel->getDeleted()) {
-            return false;
-        }
-
         if ($userModel->getId() !== PYNCER_ACCESS_USER_GUEST_ID) {
             if ($password === '') {
                 return false;
@@ -118,27 +104,9 @@ class AccessManager
 
     public function loginWithUserId(int $userId): bool
     {
-        $this->userModel = null;
+        $this->userModel = $this->getUserFromId($userId);
 
-        if ($userId <= 0) {
-            throw new InvalidArgumentException(
-                'User id must be greater than zero.'
-            );
-        }
-
-        $userMapper = $this->forgeUserMapper();
-        $userMapperQuery = $this->forgeUserMapperQuery();
-        $userModel = $userMapper->selectById($userId, $userMapperQuery);
-
-        if (!$userModel ||
-            !$userModel->getEnabled() ||
-            $userModel->getDeleted()
-        ) {
-            return false;
-        }
-
-        $this->userModel = $userModel;
-        return true;
+        return ($this->userModel !== null);
     }
 
     public function loginWithUserModel(UserModel $user): bool
@@ -182,6 +150,56 @@ class AccessManager
     protected function forgeUserMapperQuery(): ?MapperQueryInterface
     {
         return null;
+    }
+
+    public function getUserFromLogin(string $login, LoginMethod $loginMethod): ?UserModel
+    {
+        $login = trim($login);
+
+        if ($login === '') {
+            return null;
+        }
+
+        $userMapper = $this->forgeUserMapper();
+        $userMapperQuery = $this->forgeUserMapperQuery();
+
+        $userModel = match ($loginMethod) {
+            LoginMethod::EMAIL => $userMapper->selectByEmail($login, $userMapperQuery),
+            LoginMethod::USERNAME => $userMapper->selectByUsername($login, $userMapperQuery),
+            LoginMethod::PHONE => $userMapper->selectByPhone($login, $userMapperQuery),
+            default => $userMapper->selectByEmail($login, $userMapperQuery),
+        };
+
+        if (!$userModel ||
+            !$userModel->getEnabled() ||
+            $userModel->getDeleted()
+        ) {
+            return null;
+        }
+
+        return $userModel;
+    }
+
+    public function getUserFromId(int $userId): ?UserModel
+    {
+        if ($userId <= 0) {
+            throw new InvalidArgumentException(
+                'User id must be greater than zero.'
+            );
+        }
+
+        $userMapper = $this->forgeUserMapper();
+        $userMapperQuery = $this->forgeUserMapperQuery();
+        $userModel = $userMapper->selectById($userId, $userMapperQuery);
+
+        if (!$userModel ||
+            !$userModel->getEnabled() ||
+            $userModel->getDeleted()
+        ) {
+            return null;
+        }
+
+        return $userModel;
     }
 
     public function getUser(): UserModel

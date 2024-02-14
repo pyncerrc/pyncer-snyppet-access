@@ -15,11 +15,7 @@ class GetUserItemModule extends AbstractGetItemModule
     {
         $data = parent::getResponseItemData($model);
 
-        if (array_key_exists('password', $data) &&
-            $data['password'] !== null
-        ) {
-            $data['password'] = '';
-        }
+        unset($data['password']);
 
         return $data;
     }

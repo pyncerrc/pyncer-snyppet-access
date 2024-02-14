@@ -61,7 +61,7 @@ class PatchUserItemModule extends AbstractPatchItemModule
     {
         $data = parent::getRequiredItemData();
 
-        $data['update_date_time'] => pyncer_date_time(),
+        $data['update_date_time'] = pyncer_date_time();
 
         return $data;
     }
@@ -101,15 +101,17 @@ class PatchUserItemModule extends AbstractPatchItemModule
                     $passwordErrors['password1'] = 'mismatch';
                 }
             } else {
-                $password = pyncer_string_nullify($data['password'])
+                $password = pyncer_string_nullify($data['password']);
             }
 
             if ($password !== null && !$passwordErrors) {
-                $passwordRule = $this->getPasswordConfig->getPasswordRule();
+                $passwordRule = $this->getPasswordConfig->getValidationRule();
 
                 if (!$passwordRule->isValid($password)) {
                     $passwordErrors['password'] = $passwordRule->getError();
                 } else {
+                    $password = $passwordRule->clean($password);
+
                     $password = password_hash(
                         $password,
                         PASSWORD_DEFAULT

@@ -10,6 +10,9 @@ defined('Pyncer\Snyppet\Access\DEFAULT_REALM') or define('Pyncer\Snyppet\Access\
 defined('Pyncer\Snyppet\Access\LOGIN_METHOD') or define('Pyncer\Snyppet\Access\LOGIN_METHOD', LoginMethod::EMAIL);
 defined('Pyncer\Snyppet\Access\LOGIN_TOKEN_EXPIRATION') or define('Pyncer\Snyppet\Access\LOGIN_TOKEN_EXPIRATION', 172800);
 defined('Pyncer\Snyppet\Access\USER_GUEST_ID') or define('Pyncer\Snyppet\Access\USER_GUEST_ID', 1);
+defined('Pyncer\Snyppet\Access\USER_PHONE_ALLOW_E164') or define('Pyncer\Snyppet\Access\USER_PHONE_ALLOW_E164', true);
+defined('Pyncer\Snyppet\Access\USER_PHONE_ALLOW_NANP') or define('Pyncer\Snyppet\Access\USER_PHONE_ALLOW_NANP', false);
+defined('Pyncer\Snyppet\Access\USER_PHONE_ALLOW_FORMATTING') or define('Pyncer\Snyppet\Access\USER_PHONE_ALLOW_FORMATTING', false);
 
 defined('Pyncer\Snyppet\Access\PASSWORD_CONFIRM_NEW') or define('Pyncer\Snyppet\Access\PASSWORD_CONFIRM_NEW', false);
 defined('Pyncer\Snyppet\Access\PASSWORD_CONFIRM_OLD') or define('Pyncer\Snyppet\Access\PASSWORD_CONFIRM_OLD', false);
