@@ -13,6 +13,7 @@ use Pyncer\Snyppet\Config\ConfigManager;
 use const Pyncer\Snyppet\Access\ALLOW_GUEST_ACCESS as PYNCER_ACCESS_ALLOW_GUEST_ACCESS;
 use const Pyncer\Snyppet\Access\LOGIN_METHOD as PYNCER_ACCESS_LOGIN_METHOD;
 use const Pyncer\Snyppet\Access\LOGIN_TOKEN_EXPIRATION as PYNCER_ACCESS_LOGIN_TOKEN_EXPIRATION;
+use const Pyncer\Snyppet\Access\VALIDATE_LOGIN_NOT_FOUND as PYNCER_ACCESS_VALIDATE_LOGIN_NOT_FOUND;
 
 use const Pyncer\Snyppet\Access\PASSWORD_CONFIRM_NEW as PYNCER_ACCESS_PASSWORD_CONFIRM_NEW;
 use const Pyncer\Snyppet\Access\PASSWORD_CONFIRM_OLD as PYNCER_ACCESS_PASSWORD_CONFIRM_OLD;
@@ -168,6 +169,12 @@ class Install extends AbstractInstall
             $config->save('user_login_token_expiration');
         }
 
+        if (!$config->has('user_validate_login_not_found')) {
+            $config->set('user_validate_login_not_found', PYNCER_ACCESS_VALIDATE_LOGIN_NOT_FOUND);
+            $config->setPreload('user_validate_login_not_found', true);
+            $config->save('user_validate_login_not_found');
+        }
+
         if (!$config->has('password_confirm_new')) {
             $config->set('password_confirm_new', PYNCER_ACCESS_PASSWORD_CONFIRM_NEW);
             $config->setPreload('password_confirm_new', true);
@@ -254,6 +261,11 @@ class Install extends AbstractInstall
         if (!$config->has('user_login_token_expiration')) {
             $config->set('user_login_token_expiration', null);
             $config->save('user_login_token_expiration');
+        }
+
+        if (!$config->has('user_validate_login_not_found')) {
+            $config->set('user_validate_login_not_found', null);
+            $config->save('user_validate_login_not_found');
         }
 
         if (!$config->has('password_confirm_new')) {
