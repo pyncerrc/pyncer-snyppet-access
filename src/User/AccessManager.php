@@ -55,7 +55,7 @@ class AccessManager
     {
         $this->userModel = null;
 
-        $userModel == $this>getUserFromLogin($login, $loginMethod);
+        $userModel == $this->getUserFromLogin($login, $loginMethod);
 
         if ($userModel === null) {
             return null;

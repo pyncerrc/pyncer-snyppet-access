@@ -20,6 +20,8 @@ use Pyncer\Snyppet\Access\User\AccessManager;
 use Pyncer\Snyppet\Access\User\LoginMethod;
 use Pyncer\Utility\Token;
 
+use function Pyncer\date_time as pyncer_date_time;
+
 use const Pyncer\DATE_TIME_FORMAT as PYNCER_DATE_TIME_FORMAT;
 use const Pyncer\Snyppet\Access\ALLOW_GUEST_ACCESS as PYNCER_ACCESS_ALLOW_GUEST_ACCESS;
 use const Pyncer\Snyppet\Access\DEFAULT_REALM as PYNCER_ACCESS_DEFAULT_REALM;
@@ -171,8 +173,7 @@ class PostTokenItemModule extends AbstractModule
             );
         }
 
-        $dateTime = new DateTime();
-        $dateTime->setTimezone(new DateTimeZone('UTC'));
+        $dateTime = pyncer_date_time();
         $dateTime->add(new DateInterval('PT' . $loginTokenExpiration . 'S'));
 
         $model = new TokenModel([

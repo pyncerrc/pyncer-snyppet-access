@@ -19,6 +19,8 @@ use Pyncer\Snyppet\Access\Table\Token\TokenMapper;
 use Pyncer\Snyppet\Access\Table\Token\TokenMapperQuery;
 use Pyncer\Snyppet\Access\Table\Token\TokenModel;
 
+use function Pyncer\date_time as pyncer_date_time;
+
 use const Pyncer\Snyppet\Access\DEFAULT_RELAM as PYNCER_ACCESS_DEFAULT_REALM;
 use const Pyncer\Snyppet\Access\DEFAULT_SCHEME as PYNCER_ACCESS_DEFAULT_SCHEME;
 use const Pyncer\Snyppet\Access\LOGIN_TOKEN_EXPIRATION as PYNCER_ACCESS_LOGIN_TOKEN_EXPIRATION;
@@ -121,7 +123,7 @@ class PatchTokenItemModule extends AbstractModule
             );
         }
 
-        $dateTime = new DateTime();
+        $dateTime = pyncer_date_time();
         $dateTime->add(new DateInterval('PT' . $loginTokenExpiration . 'S'));
 
         $tokenModel->setExpirationDateTime($dateTime);
