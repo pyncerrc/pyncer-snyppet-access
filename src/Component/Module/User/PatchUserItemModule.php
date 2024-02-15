@@ -7,6 +7,7 @@ use Pyncer\Data\Mapper\MapperInterface;
 use Pyncer\Data\MapperQuery\MapperQueryInterface;
 use Pyncer\Data\Model\ModelInterface;
 use Pyncer\Data\Validation\ValidatorInterface;
+use Pyncer\Snyppet\Access\Component\Forge\User\PasswordConfigTrait;
 use Pyncer\Snyppet\Access\Table\User\UserMapper;
 use Pyncer\Snyppet\Access\Table\User\UserMapperQuery;
 use Pyncer\Snyppet\Access\Table\User\UserValidator;
@@ -19,34 +20,7 @@ use const PASSWORD_DEFAULT;
 
 class PatchUserItemModule extends AbstractPatchItemModule
 {
-    private ?PasswordConfig $passwordConfig = null;
-    private ?PasswordConfig $defaultPasswordConfig = null;
-
-    public function getPasswordConfig(): ?PasswordConfig
-    {
-        if ($this->passwordConfig !== null) {
-            return $this->passwordConfig;
-        }
-
-        if ($this->defaultPasswordConfig === null) {
-            $config = null;
-
-            $snyppetManager = $this->get(ID::SNYPPET);
-            if ($snyppetManager->has('config')) {
-                $config = $this->get(ID::config());
-            }
-
-            $this->defaultPasswordConfig = new PasswordConfig($config);
-        }
-
-        return $this->defaultPasswordConfig;
-    }
-
-    public function setPasswordConfig(?PasswordConfig $value): static
-    {
-        $this->passwordConfig = $value;
-        return $this;
-    }
+    use PasswordConfigTrait;
 
     protected function getResponseItemData(ModelInterface $model): array
     {

@@ -6,6 +6,7 @@ use Pyncer\Component\Module\AbstractPostItemModule;
 use Pyncer\Data\Mapper\MapperInterface;
 use Pyncer\Data\Model\ModelInterface;
 use Pyncer\Data\Validation\ValidatorInterface;
+use Pyncer\Snyppet\Access\Component\Forge\User\PasswordConfigTrait;
 use Pyncer\Snyppet\Access\Table\User\UserMapper;
 use Pyncer\Snyppet\Access\Table\User\UserValidator;
 use Pyncer\Snyppet\Access\User\PasswordConfig;
@@ -16,33 +17,7 @@ use const PASSWORD_DEFAULT;
 
 class PostUserItemModule extends AbstractPostItemModule
 {
-    private ?PasswordConfig $passwordConfig = null;
-    private ?PasswordConfig $defaultPasswordConfig = null;
-
-    public function getPasswordConfig(): ?PasswordConfig
-    {
-        if ($this->passwordConfig !== null) {
-            return $this->passwordConfig;
-        }
-
-        if ($this->defaultPasswordConfig === null) {
-            $config = null;
-
-            $snyppetManager = $this->get(ID::SNYPPET);
-            if ($snyppetManager->has('config')) {
-                $config = $this->get(ID::config());
-            }
-
-            $this->defaultPasswordConfig = new PasswordConfig($config);
-        }
-
-        return $this->defaultPasswordConfig;
-    }
-    public function setPasswordConfig(?PasswordConfig $value): static
-    {
-        $this->passwordConfig = $value;
-        return $this;
-    }
+    use PasswordConfigTrait;
 
     protected function getResponseItemData(ModelInterface $model): array
     {
@@ -58,33 +33,33 @@ class PostUserItemModule extends AbstractPostItemModule
         $passwordErrors = [];
 
         if ($this->getPasswordConfig()->getConfirmNew()) {
-            $password = pyncer_string_nullify($data['password1'] ?? null);
+            $password1 = pyncer_string_nullify($data['password1'] ?? null);
             $password2 = pyncer_string_nullify($data['password2'] ?? null);
 
-            if ($password2 !== null && $password === null) {
+            if ($password2 !== null && $password1 === null) {
                 $passwordErrors['password1'] = 'required';
-            } elseif ($password !== null && $password2 === null) {
+            } elseif ($password1 !== null && $password2 === null) {
                 $passwordErrors['password2'] = 'required';
-            } elseif ($password !==  null &&
+            } elseif ($password1 !==  null &&
                 $password2 !== null &&
-                $password !== $password2
+                $password1 !== $password2
             ) {
                 $passwordErrors['password1'] = 'mismatch';
             }
         } else {
-            $password = pyncer_string_nullify($data['password']);
+            $password1 = pyncer_string_nullify($data['password']);
         }
 
-        if ($password !== null && !$passwordErrors) {
+        if ($password1 !== null && !$passwordErrors) {
             $passwordRule = $this->getPasswordConfig->getValidationRule();
 
-            if (!$passwordRule->isValid($password)) {
+            if (!$passwordRule->isValid($password1)) {
                 $passwordErrors['password'] = $passwordRule->getError();
             } else {
-                $password = $passwordRule->clean($password);
+                $password1 = $passwordRule->clean($password1);
 
-                $password = password_hash(
-                    $password,
+                $password1 = password_hash(
+                    $password1,
                     PASSWORD_DEFAULT
                 );
             }
@@ -93,7 +68,7 @@ class PostUserItemModule extends AbstractPostItemModule
         if ($passwordErrors) {
             $data['password'] = null;
         } else {
-            $data['password'] = $password;
+            $data['password'] = $password1;
         }
 
         $validator = $this->forgeValidator();

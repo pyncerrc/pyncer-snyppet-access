@@ -42,7 +42,18 @@ class UserMapper extends AbstractMapper
         ?MapperQueryInterface $mapperQuery = null
     ): ?ModelInterface
     {
-        return $this->selectByColumns(['phone' => $phone], $mapperQuery);
+        $model = $this->selectByColumns(['phone' => $phone], $mapperQuery);
+
+        if ($model !== null) {
+            return $model;
+        }
+
+        $cleanPhone = preg_replace('/[^\d\+]/', '', $phone);
+        if ($phone !== $cleanPhone) {
+            return $this->selectByColumns(['phone' => $cleanPhone], $mapperQuery);
+        }
+
+        return null;
     }
 
     public function selectByUsername(
