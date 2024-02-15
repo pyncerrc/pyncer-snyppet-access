@@ -51,7 +51,7 @@ class PostUserItemModule extends AbstractPostItemModule
         }
 
         if ($password1 !== null && !$passwordErrors) {
-            $passwordRule = $this->getPasswordConfig->getValidationRule();
+            $passwordRule = $this->getPasswordConfig()->getValidationRule();
 
             if (!$passwordRule->isValid($password1)) {
                 $passwordErrors['password'] = $passwordRule->getError();

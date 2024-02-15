@@ -1,6 +1,7 @@
 <?php
 namespace Pyncer\Snyppet\Access\Component\Forge\User;
 
+use Pyncer\App\Identifier as ID;
 use Pyncer\Snyppet\Access\User\PasswordConfig;
 
 trait PasswordConfigTrait

@@ -44,10 +44,15 @@ class PatchUserItemModule extends AbstractPatchItemModule
     {
         $updatePassword = false;
 
+        $keys = $this->getRequestItemKeys();
+
         if ($this->getPasswordConfig()->getConfirmNew()) {
-            $updatePassword = true;
+            if ($keys === null ||
+                (in_array('password1', $keys) && in_array('password2', $keys))
+            ) {
+                $updatePassword = true;
+            }
         } else {
-            $keys = $this->getRequestItemKeys();
             if ($keys === null) {
                 if ($data['password'] !== $this->modelData['password']) {
                     $updatePassword = true;
@@ -61,33 +66,33 @@ class PatchUserItemModule extends AbstractPatchItemModule
 
         if ($updatePassword) {
             if ($this->getPasswordConfig()->getConfirmNew()) {
-                $password = pyncer_string_nullify($data['password1'] ?? null);
+                $password1 = pyncer_string_nullify($data['password1'] ?? null);
                 $password2 = pyncer_string_nullify($data['password2'] ?? null);
 
-                if ($password2 !== null && $password === null) {
+                if ($password2 !== null && $password1 === null) {
                     $passwordErrors['password1'] = 'required';
-                } elseif ($password !== null && $password2 === null) {
+                } elseif ($password1 !== null && $password2 === null) {
                     $passwordErrors['password2'] = 'required';
-                } elseif ($password !==  null &&
+                } elseif ($password1 !==  null &&
                     $password2 !== null &&
-                    $password !== $password2
+                    $password1 !== $password2
                 ) {
                     $passwordErrors['password1'] = 'mismatch';
                 }
             } else {
-                $password = pyncer_string_nullify($data['password']);
+                $password1 = pyncer_string_nullify($data['password']);
             }
 
-            if ($password !== null && !$passwordErrors) {
-                $passwordRule = $this->getPasswordConfig->getValidationRule();
+            if ($password1 !== null && !$passwordErrors) {
+                $passwordRule = $this->getPasswordConfig()->getValidationRule();
 
-                if (!$passwordRule->isValid($password)) {
+                if (!$passwordRule->isValid($password1)) {
                     $passwordErrors['password'] = $passwordRule->getError();
                 } else {
-                    $password = $passwordRule->clean($password);
+                    $password1 = $passwordRule->clean($password1);
 
-                    $password = password_hash(
-                        $password,
+                    $password1 = password_hash(
+                        $password1,
                         PASSWORD_DEFAULT
                     );
                 }
@@ -96,7 +101,7 @@ class PatchUserItemModule extends AbstractPatchItemModule
             if ($passwordErrors) {
                 $data['password'] = null;
             } else {
-                $data['password'] = $password;
+                $data['password'] = $password1;
             }
         }
 

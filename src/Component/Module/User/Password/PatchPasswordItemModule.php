@@ -4,6 +4,8 @@ namespace Pyncer\Snyppet\Access\Component\Module\User\Password;
 use Pyncer\Data\Model\ModelInterface;
 use Pyncer\Snyppet\Access\Module\User\PatchUserItemModule;
 
+use function Pyncer\String\nullify as pyncer_string_nullify;
+
 class PatchPasswordItemModule extends PatchUserItemModule
 {
     protected function getResponseItemData(ModelInterface $model): array
@@ -26,20 +28,22 @@ class PatchPasswordItemModule extends PatchUserItemModule
 
         // Make passwords required
         if ($this->getPasswordConfig()->getConfirmNew()) {
-            $password = pyncer_string_nullify($data['password1'] ?? null);
-            $password2 = pyncer_string_nullify($data['password2'] ?? null);
+            if (!array_key_exists('password1', $errors)) {
+                $password1 = pyncer_string_nullify($data['password1'] ?? null);
+                $password2 = pyncer_string_nullify($data['password2'] ?? null);
 
-            if ($password === null) {
-                $errors['password1'] = 'required';
+                if ($password1 === null) {
+                    $errors['password1'] = 'required';
+                }
+
+                if ($password2 === null) {
+                    $errors['password2'] = 'required';
+                }
             }
+        } elseif (!array_key_exists('password', $errors)) {
+            $password1 = pyncer_string_nullify($data['password']);
 
-            if ($password2 === null) {
-                $errors['password2'] = 'required';
-            }
-        } else {
-            $password = pyncer_string_nullify($data['password']);
-
-            if ($password === null) {
+            if ($password1 === null) {
                 $errors['password'] = 'required';
             }
         }
