@@ -32,42 +32,59 @@ class PostUserItemModule extends AbstractPostItemModule
     {
         $passwordErrors = [];
 
-        if ($this->getPasswordConfig()->getConfirmNew()) {
-            $password1 = pyncer_string_nullify($data['password1'] ?? null);
-            $password2 = pyncer_string_nullify($data['password2'] ?? null);
-
-            if ($password2 !== null && $password1 === null) {
-                $passwordErrors['password1'] = 'required';
-            } elseif ($password1 !== null && $password2 === null) {
-                $passwordErrors['password2'] = 'required';
-            } elseif ($password1 !==  null &&
-                $password2 !== null &&
-                $password1 !== $password2
-            ) {
-                $passwordErrors['password1'] = 'mismatch';
-            }
-        } else {
-            $password1 = pyncer_string_nullify($data['password']);
-        }
-
-        if ($password1 !== null && !$passwordErrors) {
-            $passwordRule = $this->getPasswordConfig()->getValidationRule();
-
-            if (!$passwordRule->isValid($password1)) {
-                $passwordErrors['password'] = $passwordRule->getError();
+        if ($this->insertPassword()) {
+            if ($this->getPasswordConfig()->getConfirmNew()) {
+                $password1 = pyncer_string_nullify($data['password1'] ?? null);
+                $password2 = pyncer_string_nullify($data['password2'] ?? null);
             } else {
-                $password1 = $passwordRule->clean($password1);
+                $password1 = pyncer_string_nullify($data['password']);
+                $password2 = $password1;
+            }
 
-                $password1 = password_hash(
-                    $password1,
-                    PASSWORD_DEFAULT
-                );
+            if ($this->requirePassword()) {
+                if ($password1 === null) {
+                    $passwordErrors['password1'] = 'required';
+                }
+
+                if ($password2 === null) {
+                    $passwordErrors['password2'] = 'required';
+                }
+
+                if (!$passwordErrors && $password1 !== $password2) {
+                    $passwordErrors['password1'] = 'mismatch';
+                }
+            } else {
+                if ($password2 !== null && $password1 === null) {
+                    $passwordErrors['password1'] = 'required';
+                } elseif ($password1 !== null && $password2 === null) {
+                    $passwordErrors['password2'] = 'required';
+                } elseif ($password1 !==  null &&
+                    $password2 !== null &&
+                    $password1 !== $password2
+                ) {
+                    $passwordErrors['password1'] = 'mismatch';
+                }
+            }
+
+            if ($password1 !== null && !$passwordErrors) {
+                $passwordRule = $this->getPasswordConfig()->getValidationRule();
+
+                if (!$passwordRule->isValid($password1)) {
+                    $passwordErrors['password1'] = $passwordRule->getError();
+                } else {
+                    $password1 = $passwordRule->clean($password1);
+
+                    $password1 = password_hash(
+                        $password1,
+                        PASSWORD_DEFAULT
+                    );
+                }
             }
         }
 
-        if ($passwordErrors) {
-            $data['password'] = null;
-        } else {
+        $passwordErrors = $this->normalizePasswordErrors($passwordErrors);
+
+        if (!$passwordErrors) {
             $data['password'] = $password1;
         }
 
@@ -76,14 +93,46 @@ class PostUserItemModule extends AbstractPostItemModule
 
         $errors = array_merge($errors, $passwordErrors);
 
-        if ($this->getPasswordConfig()->getConfirmNew() &&
-            array_key_exists('password', $errors)
-        ) {
-            $errors['password1'] = $errors['password'];
-            unset($errors['password']);
+        return [$data, $errors];
+    }
+
+    protected function insertPassword(): bool
+    {
+        $keys = $this->getRequestItemKeys();
+
+        if ($keys === null) {
+            return true;
         }
 
-        return [$data, $errors];
+        if ($this->getPasswordConfig()->getConfirmNew()) {
+            return (
+                in_array('password1', $keys) &&
+                in_array('password2', $keys)
+            );
+        }
+
+        return in_array('password', $keys);
+    }
+
+    protected function requirePassword(): bool
+    {
+        return false;
+    }
+
+    private function normalizePasswordErrors(array $errors): array
+    {
+        if ($this->getPasswordConfig()->getConfirmNew()) {
+            return $errors;
+        }
+
+        if (array_key_exists('password1', $errors)) {
+            $errors['password'] = $errors['password1'];
+            unset($errors['password1']);
+        }
+
+        unset($errors['password2']);
+
+        return $errors;
     }
 
     protected function forgeValidator(): ?ValidatorInterface

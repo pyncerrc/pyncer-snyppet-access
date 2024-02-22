@@ -2,7 +2,7 @@
 namespace Pyncer\Snyppet\Access\Component\Module\User\Password;
 
 use Pyncer\Data\Model\ModelInterface;
-use Pyncer\Snyppet\Access\Module\User\PatchUserItemModule;
+use Pyncer\Snyppet\Access\Component\Module\User\PatchUserItemModule;
 
 use function Pyncer\String\nullify as pyncer_string_nullify;
 
@@ -15,39 +15,27 @@ class PatchPasswordItemModule extends PatchUserItemModule
 
     protected function getRequestItemKeys(): ?array
     {
-        if ($this->getPasswordConfig()->confirmNew()) {
-            return ['password1', 'password2'];
+        $keys = [];
+
+        $passwordConfig = $this->getPasswordConfig();
+
+        if ($passwordConfig->getConfirmNew()) {
+            if ($passwordConfig->getConfirmOld()) {
+                $keys = ['password_new1', 'password_new2', 'password_old'];
+            } else {
+                $keys = ['password1', 'password2'];
+            }
+        } elseif ($passwordConfig->getConfirmOld()) {
+            $keys = ['password_new', 'password_old'];
+        } else {
+            $keys = ['password'];
         }
 
-        return ['password'];
+        return $keys;
     }
 
-    protected function validateItemData(array $data): array
+    protected function requirePassword(): bool
     {
-        [$data, $errors] = $this->validateItemData($data);
-
-        // Make passwords required
-        if ($this->getPasswordConfig()->getConfirmNew()) {
-            if (!array_key_exists('password1', $errors)) {
-                $password1 = pyncer_string_nullify($data['password1'] ?? null);
-                $password2 = pyncer_string_nullify($data['password2'] ?? null);
-
-                if ($password1 === null) {
-                    $errors['password1'] = 'required';
-                }
-
-                if ($password2 === null) {
-                    $errors['password2'] = 'required';
-                }
-            }
-        } elseif (!array_key_exists('password', $errors)) {
-            $password1 = pyncer_string_nullify($data['password']);
-
-            if ($password1 === null) {
-                $errors['password'] = 'required';
-            }
-        }
-
-        return [$data, $errors];
+        return true;
     }
 }

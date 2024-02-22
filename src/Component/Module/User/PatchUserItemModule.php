@@ -26,7 +26,15 @@ class PatchUserItemModule extends AbstractPatchItemModule
     {
         $data = parent::getResponseItemData($model);
 
-        unset($data['password'], $data['password1'], $data['password2']);
+        unset(
+            $data['password'],
+            $data['password1'],
+            $data['password2'],
+            $data['password_new'],
+            $data['password_new1'],
+            $data['password_new2'],
+            $data['password_old'],
+        );
 
         return $data;
     }
@@ -42,66 +50,82 @@ class PatchUserItemModule extends AbstractPatchItemModule
 
     protected function validateItemData(array $data): array
     {
-        $updatePassword = false;
-
-        $keys = $this->getRequestItemKeys();
-
-        if ($this->getPasswordConfig()->getConfirmNew()) {
-            if ($keys === null ||
-                (in_array('password1', $keys) && in_array('password2', $keys))
-            ) {
-                $updatePassword = true;
-            }
-        } else {
-            if ($keys === null) {
-                if ($data['password'] !== $this->modelData['password']) {
-                    $updatePassword = true;
-                }
-            } else {
-                $updatePassword = in_array('password', $keys);
-            }
-        }
-
         $passwordErrors = [];
+        $passwordConfig = $this->getPasswordConfig();
 
-        if ($updatePassword) {
-            if ($this->getPasswordConfig()->getConfirmNew()) {
-                $password1 = pyncer_string_nullify($data['password1'] ?? null);
-                $password2 = pyncer_string_nullify($data['password2'] ?? null);
-
-                if ($password2 !== null && $password1 === null) {
-                    $passwordErrors['password1'] = 'required';
-                } elseif ($password1 !== null && $password2 === null) {
-                    $passwordErrors['password2'] = 'required';
-                } elseif ($password1 !==  null &&
-                    $password2 !== null &&
-                    $password1 !== $password2
-                ) {
-                    $passwordErrors['password1'] = 'mismatch';
-                }
-            } else {
-                $password1 = pyncer_string_nullify($data['password']);
-            }
-
-            if ($password1 !== null && !$passwordErrors) {
-                $passwordRule = $this->getPasswordConfig()->getValidationRule();
-
-                if (!$passwordRule->isValid($password1)) {
-                    $passwordErrors['password'] = $passwordRule->getError();
+        if ($this->updatePassword()) {
+            if ($passwordConfig->getConfirmNew()) {
+                if ($passwordConfig->getConfirmOld()) {
+                    $passwordNew1 = pyncer_string_nullify($data['password_new1']);
+                    $passwordNew2 = pyncer_string_nullify($data['password_new2']);
+                    $passwordOld = pyncer_string_nullify($data['password_old']);
                 } else {
-                    $password1 = $passwordRule->clean($password1);
+                    $passwordNew1 = pyncer_string_nullify($data['password1']);
+                    $passwordNew2 = pyncer_string_nullify($data['password2']);
+                    $passwordOld = $data['password'];
+                }
+            } elseif ($passwordConfig->getConfirmOld()) {
+                $passwordNew1 = pyncer_string_nullify($data['password_new']);
+                $passwordNew2 = $passwordNew1;
+                $passwordOld = pyncer_string_nullify($data['password_old']);
+            } else {
+                $passwordNew1 = pyncer_string_nullify($data['password']);
+                $passwordNew2 = $passwordNew1;
+                $passwordOld = $data['password'];
+            }
 
-                    $password1 = password_hash(
-                        $password1,
-                        PASSWORD_DEFAULT
-                    );
+            if ($this->requirePassword()) {
+                if ($passwordNew1 === null) {
+                    $passwordErrors['password_new1'] = 'required';
+                }
+
+                if ($passwordNew2 === null) {
+                    $passwordErrors['password_new2'] = 'required';
+                }
+
+                if (!$passwordErrors && $passwordNew1 !== $passwordNew2) {
+                    $passwordErrors['password_new1'] = 'mismatch';
+                }
+            } else {
+                if ($passwordNew2 !== null && $passwordNew1 === null) {
+                    $passwordErrors['password_new1'] = 'required';
+                } elseif ($passwordNew1 !== null && $passwordNew2 === null) {
+                    $passwordErrors['password_new2'] = 'required';
+                } elseif ($passwordNew1 !==  null &&
+                    $passwordNew2 !== null &&
+                    $passwordNew1 !== $passwordNew2
+                ) {
+                    $passwordErrors['password_new1'] = 'mismatch';
                 }
             }
 
-            if ($passwordErrors) {
-                $data['password'] = null;
-            } else {
-                $data['password'] = $password1;
+            if ($passwordNew1 !== null && !$passwordErrors) {
+                $passwordRule = $passwordConfig->getValidationRule();
+
+                if (!$passwordRule->isValid($passwordNew1)) {
+                    $passwordErrors['password_new1'] = $passwordRule->getError();
+                } else {
+                    $passwordNew1 = $passwordRule->clean($passwordNew1);
+                }
+            }
+
+            if ($data['password'] !== null &&
+                !password_verify($passwordOld, $data['password'])
+            ) {
+                $passwordErrors['password_old'] = 'mismatch';
+            }
+
+            if ($passwordNew1 !== null && !$passwordErrors) {
+                $passwordNew1 = password_hash(
+                    $passwordNew1,
+                    PASSWORD_DEFAULT
+                );
+            }
+
+            $passwordErrors = $this->normalizePasswordErrors($passwordErrors);
+
+            if (!$passwordErrors) {
+                $data['password'] = $passwordNew1;
             }
         }
 
@@ -110,14 +134,102 @@ class PatchUserItemModule extends AbstractPatchItemModule
 
         $errors = array_merge($errors, $passwordErrors);
 
-        if ($this->getPasswordConfig()->getConfirmNew() &&
-            array_key_exists('password', $errors)
-        ) {
-            $errors['password1'] = $errors['password'];
-            unset($errors['password']);
+        return [$data, $errors];
+    }
+
+    protected function updatePassword(): bool
+    {
+        $keys = $this->getRequestItemKeys();
+        $passwordConfig = $this->getPasswordConfig();
+
+        if ($passwordConfig->getConfirmNew()) {
+            if ($keys === null) {
+                return true;
+            }
+
+            if ($passwordConfig->getConfirmOld()) {
+                return (in_array('password_old', $keys) &&
+                    in_array('password_new1', $keys) &&
+                    in_array('password_new2', $keys)
+                );
+            }
+
+            return (
+                in_array('password1', $keys) &&
+                in_array('password2', $keys)
+            );
         }
 
-        return [$data, $errors];
+        if ($passwordConfig->getConfirmOld()) {
+            if ($keys === null) {
+                return true;
+            }
+
+            return (
+                in_array('password_old', $keys) &&
+                in_array('password_new', $keys)
+            );
+        }
+
+        if ($keys === null) {
+            if ($data['password'] === $this->modelData['password']) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return in_array('password', $keys);
+    }
+    protected function requirePassword(): bool
+    {
+        return false;
+    }
+
+    private function normalizePasswordErrors(array $errors): array
+    {
+        $passwordConfig = $this->getPasswordConfig();
+
+        if ($passwordConfig->getConfirmNew()) {
+            if ($passwordConfig->getConfirmOld()) {
+                return $errors;
+            }
+
+            if (array_key_exists('password_new1', $errors)) {
+                $errors['password1'] = $errors['password_new1'];
+                unset($errors['password_new1']);
+            }
+
+            if (array_key_exists('password_new2', $errors)) {
+                $errors['password2'] = $errors['password_new2'];
+                unset($errors['password_new2']);
+            }
+
+            unset($errors['password_old']);
+
+            return $errors;
+        }
+
+        if ($passwordConfig->getConfirmOld()) {
+            if (array_key_exists('password_new1', $errors)) {
+                $errors['password_new'] = $errors['password_new1'];
+                unset($errors['password_new1']);
+            }
+
+            unset($errors['password_new2']);
+
+            return $errors;
+        }
+
+        if (array_key_exists('password_new1', $errors)) {
+            $errors['password'] = $errors['password_new1'];
+            unset($errors['password_new1']);
+        }
+
+        unset($errors['password_new2']);
+        unset($errors['password_old']);
+
+        return $errors;
     }
 
     protected function forgeValidator(): ?ValidatorInterface
