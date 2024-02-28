@@ -4,7 +4,6 @@ namespace Pyncer\Snyppet\Access\User;
 use Pyncer\Snyppet\Access\Table\User\ValueMapper;
 use Pyncer\Snyppet\Access\Table\User\ValueModel;
 use Pyncer\Database\ConnectionInterface;
-use Pyncer\Database\ConnectionTrait;
 use Pyncer\Utility\Params;
 
 use function Pyncer\Array\data_explode as pyncer_data_explode;
@@ -12,17 +11,12 @@ use function Pyncer\Array\data_implode as pyncer_data_implode;
 
 class UserValueManager extends Params
 {
-    use ConnectionTrait;
-
     private array $preload = [];
 
     public function __construct(
-        ConnectionInterface $connection,
+        protected ConnectionInterface $connection,
         protected int $userId
-    ) {
-        $this->setConnection($connection);
-
-    }
+    ) {}
 
     public function getArray(string $key, $empty = []): ?Array
     {
@@ -62,7 +56,7 @@ class UserValueManager extends Params
 
     public function preload(): static
     {
-        $mapper = new ValueMapper($this->getConnection());
+        $mapper = new ValueMapper($this->connection);
         $result = $mapper->selectAllPreloaded($this->userId);
 
         foreach ($result as $valueModel) {
@@ -75,7 +69,7 @@ class UserValueManager extends Params
 
     public function load(string ...$keys): static
     {
-        $valueMapper = new ValueMapper($this->getConnection());
+        $valueMapper = new ValueMapper($this->connection);
         $result = $valueMapper->selectAllByKeys($this->userId, $keys);
 
         foreach ($result as $valueModel) {
@@ -86,7 +80,7 @@ class UserValueManager extends Params
     }
     public function save(string ...$keys): static
     {
-        $valueMapper = new ValueMapper($this->getConnection());
+        $valueMapper = new ValueMapper($this->connection);
 
         foreach ($keys as $key) {
             $valueModel = $valueMapper->selectByKey($this->userId, $key);
