@@ -14,7 +14,7 @@ class UserMapperQuery extends AbstractRequestMapperQuery
     ): ModelInterface
     {
         if (!$this->getOptions()) {
-            return $model
+            return $model;
         }
 
         if ($this->getOptions()->hasOption('include-values')) {
