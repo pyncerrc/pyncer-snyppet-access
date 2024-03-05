@@ -2,6 +2,7 @@
 namespace Pyncer\Snyppet\Access\Table\User;
 
 use Pyncer\Data\MapperQuery\AbstractRequestMapperQuery;
+use Pyncer\Data\Model\ModelInterface;
 use Pyncer\Snyppet\Access\User\UserGroup;
 
 use function Pyncer\Array\unset_keys as pyncer_array_unset_keys;
