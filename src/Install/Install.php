@@ -224,7 +224,7 @@ class Install extends AbstractInstall
         }
 
         if (!$config->has('password_require_special_characters')) {
-            $config->set('password_require_special_characters', pyncer_access_password_require_special_characters);
+            $config->set('password_require_special_characters', PYNCER_ACCESS_PASSWORD_REQUIRE_SPECIAL_CHARACTERS);
             $config->setpreload('password_require_special_characters', true);
             $config->save('password_require_special_characters');
         }
