@@ -13,7 +13,7 @@ class TokenMapperQuery extends AbstractRequestMapperQuery
 {
     public function overrideModel(
         ModelInterface $model,
-        array $data
+        array $data,
     ): ModelInterface
     {
         if (!$this->getOptions()) {
@@ -32,7 +32,7 @@ class TokenMapperQuery extends AbstractRequestMapperQuery
     protected function isValidFilter(
         string $left,
         mixed $right,
-        string $operator
+        string $operator,
     ): bool
     {
         if ($left === 'scheme' && is_string($right) && $operator === '=') {
@@ -55,9 +55,10 @@ class TokenMapperQuery extends AbstractRequestMapperQuery
 
         return parent::isValidOption($option);
     }
+
     protected function applyOption(
         SelectQueryInterface $query,
-        string $option
+        string $option,
     ): SelectQueryInterface
     {
         if ($option === 'include-user') {

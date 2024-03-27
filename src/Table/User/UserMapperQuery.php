@@ -11,7 +11,7 @@ class UserMapperQuery extends AbstractRequestMapperQuery
 {
     public function overrideModel(
         ModelInterface $model,
-        array $data
+        array $data,
     ): ModelInterface
     {
         if (!$this->getOptions()) {
@@ -39,7 +39,7 @@ class UserMapperQuery extends AbstractRequestMapperQuery
     protected function isValidFilter(
         string $left,
         mixed $right,
-        string $operator
+        string $operator,
     ): bool
     {
         if ($left === 'internal' && is_bool($right) && $operator === '=') {

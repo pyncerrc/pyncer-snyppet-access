@@ -140,28 +140,16 @@ class PostTokenItemModule extends AbstractModule
 
         $accessManager = $this->initializeAccessManager();
 
-        $loginMethod = $this->getLoginMethod();
         $allowGuestAccess = $this->getAllowGuestAccess();
         $loginTokenExpiration = $this->getLoginTokenExpiration();
 
-        $loginValue = $this->parsedBody->getString($loginMethod->value);
-        $passwordValue = $this->parsedBody->getString('password');
-
-        if ($loginValue !== '' || $passwordValue  !== '') {
-            $loginResult = $accessManager->loginWithCredentials(
-                $loginValue,
-                $passwordValue,
-                $loginMethod
+        if ($this->login() === false) {
+            return new JsonResponse(
+                Status::CLIENT_ERROR_422_UNPROCESSABLE_ENTITY,
+                [
+                    'errors' => ['general' => 'invalid']
+                ]
             );
-
-            if (!$loginResult) {
-                return new JsonResponse(
-                    Status::CLIENT_ERROR_422_UNPROCESSABLE_ENTITY,
-                    [
-                        'errors' => ['general' => 'invalid']
-                    ]
-                );
-            }
         }
 
         if ($accessManager->isGuest() && !$allowGuestAccess) {
@@ -209,6 +197,24 @@ class PostTokenItemModule extends AbstractModule
             'Location',
             $this->getResourceUrl($model)
         );
+    }
+
+    protected function login(): ?bool
+    {
+        $loginValue = $this->parsedBody->getString($loginMethod->value);
+        $passwordValue = $this->parsedBody->getString('password');
+
+        if ($loginValue !== '' || $passwordValue  !== '') {
+            $loginMethod = $this->getLoginMethod();
+
+            return $accessManager->loginWithCredentials(
+                $loginValue,
+                $passwordValue,
+                $loginMethod
+            );
+        }
+
+        return null;
     }
 
     protected function getResponseUserData(ModelInterface $userModel): array
