@@ -143,7 +143,7 @@ class PostTokenItemModule extends AbstractModule
         $allowGuestAccess = $this->getAllowGuestAccess();
         $loginTokenExpiration = $this->getLoginTokenExpiration();
 
-        if ($this->login() === false) {
+        if ($this->login($accessManager) === false) {
             return new JsonResponse(
                 Status::CLIENT_ERROR_422_UNPROCESSABLE_ENTITY,
                 [
@@ -199,14 +199,13 @@ class PostTokenItemModule extends AbstractModule
         );
     }
 
-    protected function login(): ?bool
+    protected function login(AccessManager $accessManager): ?bool
     {
+        $loginMethod = $this->getLoginMethod();
         $loginValue = $this->parsedBody->getString($loginMethod->value);
         $passwordValue = $this->parsedBody->getString('password');
 
         if ($loginValue !== '' || $passwordValue  !== '') {
-            $loginMethod = $this->getLoginMethod();
-
             return $accessManager->loginWithCredentials(
                 $loginValue,
                 $passwordValue,
