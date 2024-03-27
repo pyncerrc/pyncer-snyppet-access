@@ -33,7 +33,7 @@ class TokenMapper extends AbstractMapper
         string $scheme,
         string $realm,
         string $token,
-        MapperQueryInterface $mapperQuery
+        ?MapperQueryInterface $mapperQuery = null
     ): ?ModelInterface
     {
         return $this->selectByColumns(
