@@ -31,9 +31,10 @@ class PostUserItemModule extends AbstractPostItemModule
     protected function validateItemData(array $data): array
     {
         $passwordErrors = [];
+        $passwordConfig = $this->getPasswordConfig();
 
         if ($this->insertPassword()) {
-            if ($this->getPasswordConfig()->getConfirmNew()) {
+            if ($passwordConfig->getConfirmNew()) {
                 $password1 = pyncer_string_nullify($data['password1'] ?? null);
                 $password2 = pyncer_string_nullify($data['password2'] ?? null);
             } else {
@@ -67,7 +68,7 @@ class PostUserItemModule extends AbstractPostItemModule
             }
 
             if ($password1 !== null && !$passwordErrors) {
-                $passwordRule = $this->getPasswordConfig()->getValidationRule();
+                $passwordRule = $passwordConfig->getValidationRule();
 
                 if (!$passwordRule->isValid($password1)) {
                     $passwordErrors['password1'] = $passwordRule->getError();
@@ -80,12 +81,12 @@ class PostUserItemModule extends AbstractPostItemModule
                     );
                 }
             }
-        }
 
-        $passwordErrors = $this->normalizePasswordErrors($passwordErrors);
+            $passwordErrors = $this->normalizePasswordErrors($passwordErrors);
 
-        if (!$passwordErrors) {
-            $data['password'] = $password1;
+            if (!$passwordErrors) {
+                $data['password'] = $password1;
+            }
         }
 
         $validator = $this->forgeValidator();
