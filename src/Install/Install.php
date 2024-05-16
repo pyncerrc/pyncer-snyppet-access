@@ -63,11 +63,24 @@ class Install extends AbstractInstall
                 ->updateAction(ReferentialAction::CASCADE)
             ->execute();
 
+        $this->connection->createTable('user__data')
+            ->serial('id')
+            ->int('user_id', IntSize::BIG)->index()
+            ->string('key', 50)->index()
+            ->string('type', 125)->index()
+            ->text('value', TextSize::MEDIUM)
+            ->index('#unique', 'user_id', 'key')->unique()
+            ->foreignKey(null, 'user_id')
+                ->references('user', 'id')
+                ->deleteAction(ReferentialAction::CASCADE)
+                ->updateAction(ReferentialAction::CASCADE)
+            ->execute();
+
         $this->connection->createTable('user__value')
             ->serial('id')
             ->int('user_id', IntSize::BIG)->index()
             ->string('key', 50)->index()
-            ->text('value')
+            ->string('value', 250)->index()
             ->bool('preload')->default(false)->index()
             ->index('#unique', 'user_id', 'key')->unique()
             ->foreignKey(null, 'user_id')

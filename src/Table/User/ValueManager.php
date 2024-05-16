@@ -1,57 +1,24 @@
 <?php
-namespace Pyncer\Snyppet\Access\User;
+namespace Pyncer\Snyppet\Access\Table\User;
 
+use Pyncer\Database\ConnectionInterface;
 use Pyncer\Snyppet\Access\Table\User\ValueMapper;
 use Pyncer\Snyppet\Access\Table\User\ValueModel;
-use Pyncer\Database\ConnectionInterface;
+use Pyncer\Snyppet\Access\Table\User\ValueValidator;
+use Pyncer\Snyppet\Utility\Data\AbstractDataManager;
+use Pyncer\Snyppet\Utility\Data\PreloadInterface;
+use Pyncer\Snyppet\Utility\Data\PreloadTrait;
 use Pyncer\Utility\Params;
 
-use function Pyncer\Array\data_explode as pyncer_data_explode;
-use function Pyncer\Array\data_implode as pyncer_data_implode;
-
-class UserValueManager extends Params
+class ValueManager extends AbstractDataManager implements PreloadInterface
 {
-    private array $preload = [];
+    use PreloadTrait;
 
     public function __construct(
-        protected ConnectionInterface $connection,
+        ConnectionInterface $connection,
         protected int $userId
-    ) {}
-
-    public function getArray(string $key, $empty = []): ?Array
-    {
-        $value = $this->get($key);
-        if ($value !== null) {
-            $value = pyncer_data_explode(',', $value);
-        }
-
-        if ($value === null || $value === []) {
-            $value = $empty;
-        }
-
-        return $value;
-    }
-
-    public function setArray(string $key, ?iterable $value): static
-    {
-        if ($value === null) {
-            $this->set($key, null);
-            return $this;
-        }
-
-        $this->set($key, pyncer_data_implode(',', [...$value]));
-        return $this;
-    }
-
-    public function getPreload(string $key): bool
-    {
-        return $this->preload[$key] ?? false;
-    }
-
-    public function setPreload(string $key, bool $value): static
-    {
-        $this->preload[$key] = $value;
-        return $this;
+    ) {
+        parent::__construct($connection);
     }
 
     public function preload(): static
@@ -61,7 +28,7 @@ class UserValueManager extends Params
 
         foreach ($result as $valueModel) {
             $this->set($valueModel->getKey(), $valueModel->getValue());
-            $this->preload[$valueModel->getKey()] = true;
+            $this->setPreload($valueModel->getKey(), true);
         }
 
         return $this;
@@ -74,10 +41,40 @@ class UserValueManager extends Params
 
         foreach ($result as $valueModel) {
             $this->set($valueModel->getKey(), $valueModel->getValue());
+            $this->setPreload($valueModel->getKey(), $valueModel->getPreload());
         }
 
         return $this;
     }
+
+    public function validate(string ...$keys): array
+    {
+        $errors = [];
+
+        foreach ($keys as $key) {
+            $value = $this->getString($key, null);
+
+            if ($value === null) {
+                continue;
+            }
+
+            $preload = $this->getPreload($key);
+
+            $validator = new ValueValidator($connection);
+            [$data, $itemErrors] = $validator->validateData([
+                'key' => $key,
+                'value' => $value,
+                'preload' => $preload,
+            ]);
+
+            if ($itemErrors) {
+                $errors[$key] = $itemErrors;
+            }
+        }
+
+        return $errors;
+    }
+
     public function save(string ...$keys): static
     {
         $valueMapper = new ValueMapper($this->connection);
@@ -85,7 +82,7 @@ class UserValueManager extends Params
         foreach ($keys as $key) {
             $valueModel = $valueMapper->selectByKey($this->userId, $key);
 
-            $value = $this->get($key);
+            $value = $this->getString($key, null);
 
             if ($value === null) {
                 if ($valueModel) {
@@ -101,15 +98,9 @@ class UserValueManager extends Params
                 $valueModel->setKey($key);
             }
 
-            $value = match ($value) {
-                true => '1',
-                false => '0',
-                default => strval($value),
-            };
-
             $valueModel->setValue($value);
 
-            $valueModel->setPreload($this->preload[$key] ?? false);
+            $valueModel->setPreload($this->getPreload($key));
 
             $valueMapper->replace($valueModel);
         }
