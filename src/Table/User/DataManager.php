@@ -6,8 +6,8 @@ use Pyncer\Snyppet\Access\Table\User\DataMapper;
 use Pyncer\Snyppet\Access\Table\User\DataModel;
 use Pyncer\Snyppet\Access\Table\User\DataValidator;
 use Pyncer\Snyppet\Utility\Data\AbstractDataManager;
-use Pyncer\Snyppet\Utility\Data\PreloadInterface;
-use Pyncer\Snyppet\Utility\Data\PreloadTrait;
+use Pyncer\Snyppet\Utility\Data\TypeInterface;
+use Pyncer\Snyppet\Utility\Data\TypeTrait;
 use Pyncer\Utility\Params;
 
 class DataManager extends AbstractDataManager implements TypeInterface
