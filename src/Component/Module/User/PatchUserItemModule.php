@@ -62,7 +62,7 @@ class PatchUserItemModule extends AbstractPatchItemModule
                 } else {
                     $passwordNew1 = pyncer_string_nullify($data['password1']);
                     $passwordNew2 = pyncer_string_nullify($data['password2']);
-                    $passwordOld = $data['password'];
+                    $passwordOld = $this->modelData['password'];
                 }
             } elseif ($passwordConfig->getConfirmOld()) {
                 $passwordNew1 = pyncer_string_nullify($data['password_new']);
@@ -71,7 +71,7 @@ class PatchUserItemModule extends AbstractPatchItemModule
             } else {
                 $passwordNew1 = pyncer_string_nullify($data['password']);
                 $passwordNew2 = $passwordNew1;
-                $passwordOld = $data['password'];
+                $passwordOld = $this->modelData['password'];
             }
 
             if ($this->requirePassword()) {
@@ -109,8 +109,8 @@ class PatchUserItemModule extends AbstractPatchItemModule
                 }
             }
 
-            if ($data['password'] !== null &&
-                !password_verify($passwordOld, $data['password'])
+            if ($this->modelData['password'] !== null &&
+                !password_verify($passwordOld, $this->modelData['password'])
             ) {
                 $passwordErrors['password_old'] = 'mismatch';
             }
