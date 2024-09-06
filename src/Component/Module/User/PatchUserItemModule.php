@@ -128,6 +128,16 @@ class PatchUserItemModule extends AbstractPatchItemModule
             if (!$passwordErrors) {
                 $data['password'] = $passwordNew1;
             }
+        } elseif ($this->confirmPassword() &&
+            $this->modelData['password'] !== null
+        ) {
+            $password = pyncer_string_nullify($data['password']);
+
+            if ($password === null) {
+                $passwordErrors['password'] = 'required';
+            } elseif (!password_verify($password, $this->modelData['password'])) {
+                $passwordErrors['password'] = 'mismatch';
+            }
         }
 
         $validator = $this->forgeValidator();
@@ -183,6 +193,11 @@ class PatchUserItemModule extends AbstractPatchItemModule
         return in_array('password', $keys);
     }
     protected function requirePassword(): bool
+    {
+        return false;
+    }
+
+    protected function confirmPassword(): bool
     {
         return false;
     }
