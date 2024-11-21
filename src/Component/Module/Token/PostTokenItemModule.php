@@ -128,7 +128,7 @@ class PostTokenItemModule extends AbstractModule
         return $this;
     }
 
-    protected function initializeAccessManager(): AccessManager
+    protected function forgeAccessManager(): AccessManager
     {
         $connection = $this->get(ID::DATABASE);
         return new AccessManager($connection);
@@ -138,7 +138,7 @@ class PostTokenItemModule extends AbstractModule
     {
         $connection = $this->get(ID::DATABASE);
 
-        $accessManager = $this->initializeAccessManager();
+        $accessManager = $this->forgeAccessManager();
 
         $allowGuestAccess = $this->getAllowGuestAccess();
         $loginTokenExpiration = $this->getLoginTokenExpiration();

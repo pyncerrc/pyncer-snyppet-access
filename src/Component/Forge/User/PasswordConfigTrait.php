@@ -16,7 +16,7 @@ trait PasswordConfigTrait
         }
 
         if ($this->defaultPasswordConfig === null) {
-            $this->defaultPasswordConfig = $this->initializePasswordConfig();
+            $this->defaultPasswordConfig = $this->forgePasswordConfig();
         }
 
         return $this->defaultPasswordConfig;
@@ -27,7 +27,7 @@ trait PasswordConfigTrait
         return $this;
     }
 
-    protected function initializePasswordConfig(): PasswordConfig
+    protected function forgePasswordConfig(): PasswordConfig
     {
         $config = null;
 
