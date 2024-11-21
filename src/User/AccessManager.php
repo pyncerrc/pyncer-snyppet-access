@@ -63,10 +63,7 @@ class AccessManager
                 return false;
             }
 
-            $passwordManager = new PasswordManager(
-                $this->connection,
-                $userModel
-            );
+            $passwordManager = forgePasswordMananger($userModel);
 
             if (!$passwordManager->verify($password)) {
                 return false;
@@ -131,6 +128,14 @@ class AccessManager
         }
 
         return false;
+    }
+
+    protected function forgePasswordMananger(UserModel $userModel): PasswordManager
+    {
+        return new PasswordManager(
+            $this->connection,
+            $userModel
+        );
     }
 
     /**
