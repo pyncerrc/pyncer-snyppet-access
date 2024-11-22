@@ -2,6 +2,7 @@
 namespace Pyncer\Snyppet\Access\Install;
 
 use Pyncer\Database\Table\Column\IntSize;
+use Pyncer\Database\Table\Column\TextSize;
 use Pyncer\Database\Table\ReferentialAction;
 use Pyncer\Database\Value;
 use Pyncer\Snyppet\AbstractInstall;
