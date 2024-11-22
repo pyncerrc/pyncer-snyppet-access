@@ -63,7 +63,7 @@ class AccessManager
                 return false;
             }
 
-            $passwordManager = forgePasswordMananger($userModel);
+            $passwordManager = $this->forgePasswordMananger($userModel);
 
             if (!$passwordManager->verify($password)) {
                 return false;
