@@ -192,6 +192,7 @@ class PatchUserItemModule extends AbstractPatchItemModule
 
         return in_array('password', $keys);
     }
+
     protected function requirePassword(): bool
     {
         return false;
