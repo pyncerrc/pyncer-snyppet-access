@@ -43,7 +43,7 @@ class PasswordConfig
         $minLength = PYNCER_ACCESS_PASSWORD_MIN_LENGTH;
 
         if ($this->config !== null) {
-            $minLength = $this->config->getString(
+            $minLength = $this->config->getInt(
                 'password_min_length',
                 $minLength
             );
@@ -66,7 +66,7 @@ class PasswordConfig
         $maxLength = PYNCER_ACCESS_PASSWORD_MAX_LENGTH;
 
         if ($this->config !== null) {
-            $maxLength = $this->config->getString(
+            $maxLength = $this->config->getInt(
                 'password_max_length',
                 $maxLength
             );
