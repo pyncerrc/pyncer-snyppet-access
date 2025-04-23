@@ -22,6 +22,29 @@ class PatchUserItemModule extends AbstractPatchItemModule
 {
     use PasswordConfigTrait;
 
+    protected bool $requirePassword = false;
+    protected bool $confirmPassword = false;
+
+    public function getRequirePassword(): bool
+    {
+        return $this->requirePassword;
+    }
+    public function setRequirePassword(bool $value): static
+    {
+        $this->requirePassword = $value;
+        return $this;
+    }
+
+    public function getConfirmPassword(): bool
+    {
+        return $this->confirmPassword;
+    }
+    public function setConfirmPassword(bool $value): static
+    {
+        $this->confirmPassword = $value;
+        return $this;
+    }
+
     protected function getResponseItemData(ModelInterface $model): array
     {
         $data = parent::getResponseItemData($model);
@@ -74,7 +97,7 @@ class PatchUserItemModule extends AbstractPatchItemModule
                 $passwordOld = null;
             }
 
-            if ($this->requirePassword()) {
+            if ($this->getRequirePassword()) {
                 if ($passwordNew1 === null) {
                     $passwordErrors['password_new1'] = 'required';
                 }
@@ -128,7 +151,7 @@ class PatchUserItemModule extends AbstractPatchItemModule
             if (!$passwordErrors) {
                 $data['password'] = $passwordNew1;
             }
-        } elseif ($this->confirmPassword() &&
+        } elseif ($this->getConfirmPassword() &&
             $this->modelData['password'] !== null
         ) {
             $password = pyncer_string_nullify($data['password']);
@@ -191,16 +214,6 @@ class PatchUserItemModule extends AbstractPatchItemModule
         }
 
         return in_array('password', $keys);
-    }
-
-    protected function requirePassword(): bool
-    {
-        return false;
-    }
-
-    protected function confirmPassword(): bool
-    {
-        return false;
     }
 
     private function normalizePasswordErrors(array $errors): array

@@ -19,6 +19,18 @@ class PostUserItemModule extends AbstractPostItemModule
 {
     use PasswordConfigTrait;
 
+    protected bool $requirePassword = false;
+
+    public function getRequirePassword(): bool
+    {
+        return $this->requirePassword;
+    }
+    public function setRequirePassword(bool $value): static
+    {
+        $this->requirePassword = $value;
+        return $this;
+    }
+
     protected function getResponseItemData(ModelInterface $model): array
     {
         $data = parent::getResponseItemData($model);
@@ -42,7 +54,7 @@ class PostUserItemModule extends AbstractPostItemModule
                 $password2 = $password1;
             }
 
-            if ($this->requirePassword()) {
+            if ($this->getRequirePassword()) {
                 if ($password1 === null) {
                     $passwordErrors['password1'] = 'required';
                 }
@@ -113,11 +125,6 @@ class PostUserItemModule extends AbstractPostItemModule
         }
 
         return in_array('password', $keys);
-    }
-
-    protected function requirePassword(): bool
-    {
-        return false;
     }
 
     private function normalizePasswordErrors(array $errors): array
