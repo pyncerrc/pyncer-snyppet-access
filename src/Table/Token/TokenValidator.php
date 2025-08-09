@@ -6,6 +6,7 @@ use Pyncer\Database\ConnectionInterface;
 use Pyncer\Snyppet\Access\Table\User\UserMapper;
 use Pyncer\Validation\Rule\DateTimeRule;
 use Pyncer\Validation\Rule\IdRule;
+use Pyncer\Validation\Rule\IntRule;
 use Pyncer\Validation\Rule\RequiredRule;
 use Pyncer\Validation\Rule\StringRule;
 
@@ -17,9 +18,12 @@ class TokenValidator extends AbstractValidator
 
         $this->addRules(
             'user_id',
+            new IntRule(
+                minValue: 0,
+                allowNull: true,
+            ),
             new IdRule(
                 mapper: new UserMapper($this->getConnection()),
-                allowNull: true,
             ),
         );
 

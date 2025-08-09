@@ -6,6 +6,7 @@ use Pyncer\Data\Validation\AbstractValidator;
 use Pyncer\Database\ConnectionInterface;
 use Pyncer\Validation\Rule\BoolRule;
 use Pyncer\Validation\Rule\IdRule;
+use Pyncer\Validation\Rule\IntRule;
 use Pyncer\Validation\Rule\RequiredRule;
 use Pyncer\Validation\Rule\StringRule;
 
@@ -17,7 +18,10 @@ class ValueValidator extends AbstractValidator
 
         $this->addRules(
             'user_id',
-            new RequiredRule(),
+            new RequiredRule(IntRule::EMPTY),
+            new IntRule(
+                minValue: 0,
+            ),
             new IdRule(
                 mapper: new UserMapper($this->getConnection()),
             ),

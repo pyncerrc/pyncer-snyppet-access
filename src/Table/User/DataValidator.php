@@ -5,6 +5,7 @@ use Pyncer\Snyppet\Access\User\Table\User\UserMapper;
 use Pyncer\Data\Validation\AbstractValidator;
 use Pyncer\Database\ConnectionInterface;
 use Pyncer\Validation\Rule\IdRule;
+use Pyncer\Validation\Rule\IntRule;
 use Pyncer\Validation\Rule\RequiredRule;
 use Pyncer\Validation\Rule\StringRule;
 
@@ -16,7 +17,10 @@ class DataValidator extends AbstractValidator
 
         $this->addRules(
             'user_id',
-            new RequiredRule(),
+            new RequiredRule(IntRule::EMPTY),
+            new IntRule(
+                minValue: 0,
+            ),
             new IdRule(
                 mapper: new UserMapper($this->getConnection()),
             ),
@@ -42,7 +46,7 @@ class DataValidator extends AbstractValidator
             'value',
             new RequiredRule(),
             new StringRule(
-                maxLength: 250,
+                maxLength: 4000000,
             ),
         );
     }
