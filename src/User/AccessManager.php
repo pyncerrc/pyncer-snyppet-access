@@ -6,12 +6,14 @@ use DateTimeZone;
 use DateInterval;
 use Pyncer\Data\Mapper\MapperInterface;
 use Pyncer\Data\MapperQuery\MapperQueryInterface;
+use Pyncer\Data\MapperQuery\FiltersQueryParam;
 use Pyncer\Database\ConnectionInterface;
 use Pyncer\Exception\InvalidArgumentException;
 use Pyncer\Exception\UnexpectedValueException;
 use Pyncer\Snyppet\Access\Table\Token\TokenMapper;
 use Pyncer\Snyppet\Access\Table\Token\TokenModel;
 use Pyncer\Snyppet\Access\Table\User\UserMapper;
+use Pyncer\Snyppet\Access\Table\User\UserMapperQuery;
 use Pyncer\Snyppet\Access\Table\User\UserModel;
 use Pyncer\Snyppet\Access\User\UserGroup;
 use Pyncer\Snyppet\Access\User\LoginMethod;
@@ -150,7 +152,10 @@ class AccessManager
     */
     protected function forgeUserMapperQuery(): ?MapperQueryInterface
     {
-        return null;
+        $mapperQuery = new UserMapperQuery($this->connection);
+        $filters = 'enabled eq true and deleted eq false';
+        $mapperQuery->setFilters(new FiltersQueryParam($filters));
+        return $mapperQuery;
     }
 
     public function getUserFromLogin(string $login, LoginMethod $loginMethod): ?UserModel
@@ -171,10 +176,7 @@ class AccessManager
             default => $userMapper->selectByEmail($login, $userMapperQuery),
         };
 
-        if (!$userModel ||
-            !$userModel->getEnabled() ||
-            $userModel->getDeleted()
-        ) {
+        if (!$userModel) {
             return null;
         }
 
