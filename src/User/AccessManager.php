@@ -176,7 +176,10 @@ class AccessManager
             default => $userMapper->selectByEmail($login, $userMapperQuery),
         };
 
-        if (!$userModel) {
+        if (!$userModel ||
+            !$userModel->getEnabled() ||
+            $userModel->getDeleted()
+        ) {
             return null;
         }
 
