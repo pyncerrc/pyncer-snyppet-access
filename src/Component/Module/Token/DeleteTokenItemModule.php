@@ -13,7 +13,7 @@ use Pyncer\Snyppet\Access\Component\Forge\Token\TokenElementTrait;
 use Pyncer\Snyppet\Access\Table\Token\TokenMapper;
 use Pyncer\Snyppet\Access\Table\Token\TokenMapperQuery;
 
-use const Pyncer\Snyppet\Access\DEFAULT_RELAM as PYNCER_ACCESS_DEFAULT_RELAM;
+use const Pyncer\Snyppet\Access\DEFAULT_REALM as PYNCER_ACCESS_DEFAULT_REALM;
 use const Pyncer\Snyppet\Access\DEFAULT_SCHEME as PYNCER_ACCESS_DEFAULT_SCHEME;
 
 class DeleteTokenItemModule extends AbstractModule
