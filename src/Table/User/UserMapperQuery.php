@@ -31,7 +31,7 @@ class UserMapperQuery extends AbstractRequestMapperQuery
             }
 
             $extraData = pyncer_array_unset_keys($extraData, $model->getKeys());
-            $model->setExtraData($extraData);
+            $model->addExtraData($extraData);
         }
 
         return $model;
