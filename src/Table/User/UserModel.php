@@ -6,12 +6,23 @@ use DateTimeInterface;
 use Pyncer\Data\Model\AbstractModel;
 use Pyncer\Snyppet\Access\User\UserGroup;
 
+use function Pyncer\uid as pyncer_uid;
 use function Pyncer\date_time as pyncer_date_time;
 
 use const Pyncer\DATE_TIME_FORMAT as PYNCER_DATE_TIME_FORMAT;
 
 class UserModel extends AbstractModel
 {
+    public function getUid(): string
+    {
+        return $this->get('uid');
+    }
+    public function setUid(string $value): static
+    {
+        $this->set('uid', $value);
+        return $this;
+    }
+
     public function getMark(): ?string
     {
         return $this->get('mark');
@@ -151,6 +162,7 @@ class UserModel extends AbstractModel
 
         return [
             'id' => 0,
+            'uid' => pyncer_uid(),
             'mark' => null,
             'insert_date_time' => $dateTime,
             'update_date_time' => null,

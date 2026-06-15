@@ -104,6 +104,13 @@ class AccessManager
         return ($this->userModel !== null);
     }
 
+    public function loginWithUserUid(string $userUid): bool
+    {
+        $this->userModel = $this->getUserFromUid($userUid);
+
+        return ($this->userModel !== null);
+    }
+
     public function loginWithUserModel(UserModel $user): bool
     {
         $this->userModel = null;
@@ -197,6 +204,22 @@ class AccessManager
         $userMapper = $this->forgeUserMapper();
         $userMapperQuery = $this->forgeUserMapperQuery();
         $userModel = $userMapper->selectById($userId, $userMapperQuery);
+
+        if (!$userModel ||
+            !$userModel->getEnabled() ||
+            $userModel->getDeleted()
+        ) {
+            return null;
+        }
+
+        return $userModel;
+    }
+
+    public function getUserFromUid(string $userUid): ?UserModel
+    {
+        $userMapper = $this->forgeUserMapper();
+        $userMapperQuery = $this->forgeUserMapperQuery();
+        $userModel = $userMapper->selectByUid($userUid, $userMapperQuery);
 
         if (!$userModel ||
             !$userModel->getEnabled() ||

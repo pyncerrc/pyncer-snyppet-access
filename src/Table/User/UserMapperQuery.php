@@ -34,6 +34,24 @@ class UserMapperQuery extends AbstractRequestMapperQuery
             $model->addExtraData($extraData);
         }
 
+        if ($this->getOptions()->hasOption('include-user-data')) {
+            $result = $this->getConnection()->select('user__data')
+                ->columns('key', 'type', 'value')
+                ->where(['user_id' => $model->getId()])
+                ->result();
+
+            $extraData = [];
+            foreach ($result as $row) {
+                $extraData[$row['key']] = [
+                    'type' => $row['type'],
+                    'value' => $row['value'],
+                ];
+            }
+
+            $extraData = pyncer_array_unset_keys($extraData, $model->getKeys());
+            $model->addExtraData($extraData);
+        }
+
         return $model;
     }
 
@@ -43,27 +61,52 @@ class UserMapperQuery extends AbstractRequestMapperQuery
         string $operator,
     ): bool
     {
-        if ($left === 'internal' && is_bool($right) && $operator === '=') {
+        if ($left === 'uid' &&
+            is_string($right) &&
+            ($operator === '=' || $operator === '!=')
+        ) {
             return true;
         }
 
-        if ($left === 'enabled' && is_bool($right) && $operator === '=') {
+        if ($left === 'internal' &&
+            is_bool($right) &&
+            ($operator === '=' || $operator === '!=')
+        ) {
             return true;
         }
 
-        if ($left === 'deleted' && is_bool($right) && $operator === '=') {
+        if ($left === 'enabled' &&
+            is_bool($right) &&
+            ($operator === '=' || $operator === '!=')
+        ) {
             return true;
         }
 
-        if ($left === 'email' && is_string($right) && $operator === '=') {
+        if ($left === 'deleted' &&
+            is_bool($right) &&
+            ($operator === '=' || $operator === '!=')
+        ) {
             return true;
         }
 
-        if ($left === 'phone' && is_string($right) && $operator === '=') {
+        if ($left === 'email' &&
+            is_string($right) &&
+            ($operator === '=' || $operator === '!=')
+        ) {
             return true;
         }
 
-        if ($left === 'username' && is_string($right) && $operator === '=') {
+        if ($left === 'phone' &&
+            is_string($right) &&
+            ($operator === '=' || $operator === '!=')
+        ) {
+            return true;
+        }
+
+        if ($left === 'username' &&
+            is_string($right) &&
+            ($operator === '=' || $operator === '!=')
+        ) {
             return true;
         }
 
@@ -117,10 +160,25 @@ class UserMapperQuery extends AbstractRequestMapperQuery
     protected function isValidOption(string $option): bool
     {
         switch ($option) {
+            case 'include-user-data':
             case 'include-user-values':
                 return true;
         }
 
         return parent::isValidOption($option);
+    }
+
+    protected function isValidOrderBy(string $key, string $direction): bool
+    {
+        switch ($key) {
+            case 'name':
+            case 'email':
+            case 'phone':
+            case 'username':
+            case 'enabled':
+                return true;
+        }
+
+       return parent::isValidOrderBy($key, $direction);
     }
 }

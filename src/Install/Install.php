@@ -37,6 +37,7 @@ class Install extends AbstractInstall
     {
         $this->connection->createTable('user')
             ->serial('id')
+            ->char('uid', 36)->index()
             ->string('mark', 250)->null()->index()
             ->dateTime('insert_date_time')->default(Value::NOW)->index()
             ->dateTime('update_date_time')->null()->index()
@@ -49,6 +50,7 @@ class Install extends AbstractInstall
             ->bool('internal')->default(false)->index()
             ->bool('enabled')->default(false)->index()
             ->bool('deleted')->default(false)->index()
+            ->index('#unique', 'uid')->unique()
             ->execute();
 
         $query = $this->connection->createTable('token')
