@@ -1,9 +1,9 @@
 <?php
 namespace Pyncer\Snyppet\Access\Table\User;
 
-use Pyncer\Snyppet\Access\User\Table\User\UserMapper;
 use Pyncer\Data\Validation\AbstractValidator;
 use Pyncer\Database\ConnectionInterface;
+use Pyncer\Snyppet\Access\Table\User\UserMapper;
 use Pyncer\Validation\Rule\BoolRule;
 use Pyncer\Validation\Rule\IdRule;
 use Pyncer\Validation\Rule\IntRule;
