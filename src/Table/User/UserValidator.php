@@ -10,6 +10,7 @@ use Pyncer\Validation\Rule\EnumRule;
 use Pyncer\Validation\Rule\PhoneRule;
 use Pyncer\Validation\Rule\RequiredRule;
 use Pyncer\Validation\Rule\StringRule;
+use Pyncer\Validation\Rule\UidRule;
 
 use const Pyncer\Snyppet\Access\USER_PHONE_ALLOW_E164 as PYNCER_ACCESS_USER_PHONE_ALLOW_E164;
 use const Pyncer\Snyppet\Access\USER_PHONE_ALLOW_NANP as PYNCER_ACCESS_USER_PHONE_ALLOW_NANP;
@@ -20,6 +21,15 @@ class UserValidator extends AbstractValidator
     public function __construct(ConnectionInterface $connection)
     {
         parent::__construct($connection);
+
+        $this->addRules(
+            'uid',
+            new RequiredRule(UidRule::EMPTY),
+            new UidRule(),
+            new StringRule(
+                maxLength: 36,
+            ),
+        );
 
         $this->addRules(
             'mark',
