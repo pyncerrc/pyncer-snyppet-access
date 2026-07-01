@@ -140,7 +140,7 @@ class Install extends AbstractInstall
     /**
      * @inheritdoc
      */
-    public function installRelated(string $snyppetAlias): bool
+    public function safeInstallRelated(string $snyppetAlias): bool
     {
         switch ($snyppetAlias) {
             case 'config':
@@ -153,11 +153,11 @@ class Install extends AbstractInstall
     /**
      * @inheritdoc
      */
-    public function uninstallRelated(string $snyppetAlias): bool
+    public function safeUninstallRelated(string $snyppetAlias): bool
     {
         switch ($snyppetAlias) {
             case 'config':
-                return $this->installConfig();
+                return $this->uninstallConfig();
         }
 
         return false;

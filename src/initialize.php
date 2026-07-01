@@ -13,9 +13,9 @@ Initializer::define('Pyncer\Snyppet\Access\LOGIN_TOKEN_EXPIRATION', 172800);
 Initializer::define('Pyncer\Snyppet\Access\VALIDATE_LOGIN_NOT_FOUND', false);
 Initializer::define('Pyncer\Snyppet\Access\USER_GUEST_ID', 1);
 
-Initializer::defineFrom('Pyncer\Snyppet\Access\USER_PHONE_ALLOW_E164', 'Pyncer\Validation\PHONE_ALLOW_E164', true);
-Initializer::defineFrom('Pyncer\Snyppet\Access\USER_PHONE_ALLOW_NANP', 'Pyncer\Validation\PHONE_ALLOW_NANP', false);
-Initializer::defineFrom('Pyncer\Snyppet\Access\USER_PHONE_ALLOW_FORMATTING', 'Pyncer\Validation\PHONE_ALLOW_FORMATTING', false);
+Initializer::defineFrom('Pyncer\Snyppet\Access\PHONE_ALLOW_E164', 'Pyncer\Validation\PHONE_ALLOW_E164', true);
+Initializer::defineFrom('Pyncer\Snyppet\Access\PHONE_ALLOW_NANP', 'Pyncer\Validation\PHONE_ALLOW_NANP', false);
+Initializer::defineFrom('Pyncer\Snyppet\Access\PHONE_ALLOW_FORMATTING', 'Pyncer\Validation\PHONE_ALLOW_FORMATTING', false);
 
 Initializer::defineFrom('Pyncer\Snyppet\Access\PASSWORD_CONFIRM_NEW', 'Pyncer\Validation\PASSWORD_CONFIRM_NEW', false);
 Initializer::defineFrom('Pyncer\Snyppet\Access\PASSWORD_CONFIRM_OLD', 'Pyncer\Validation\PASSWORD_CONFIRM_OLD', false);
