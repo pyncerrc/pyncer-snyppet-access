@@ -114,7 +114,7 @@ class PatchUserItemModule extends AbstractPatchItemModule
                     $passwordErrors['password_new1'] = 'required';
                 } elseif ($passwordNew1 !== null && $passwordNew2 === null) {
                     $passwordErrors['password_new2'] = 'required';
-                } elseif ($passwordNew1 !==  null &&
+                } elseif ($passwordNew1 !== null &&
                     $passwordNew2 !== null &&
                     $passwordNew1 !== $passwordNew2
                 ) {

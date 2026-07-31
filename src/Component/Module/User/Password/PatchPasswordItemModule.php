@@ -34,7 +34,7 @@ class PatchPasswordItemModule extends PatchUserItemModule
         return $keys;
     }
 
-    protected function requirePassword(): bool
+    protected function getRequirePassword(): bool
     {
         return true;
     }
