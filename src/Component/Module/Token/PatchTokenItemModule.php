@@ -129,7 +129,20 @@ class PatchTokenItemModule extends AbstractModule
 
         $tokenModel->setExpirationDateTime($dateTime);
 
-        $tokenMapper->update($tokenModel);
+        $errors = $this->updateItem($tokenModel);
+
+        if ($errors) {
+            if (($errors['general'] ?? null) === 'update') {
+                return new Response(
+                    Status::SERVER_ERROR_500_INTERNAL_SERVER_ERROR,
+                );
+            }
+
+            return new JsonResponse(
+                Status::CLIENT_ERROR_422_UNPROCESSABLE_ENTITY,
+                ['errors' => $errors]
+            );
+        }
 
         $expirationDateTime = $tokenModel->getExpirationDateTime()
             ->format(PYNCER_DATE_TIME_FORMAT);
@@ -149,6 +162,21 @@ class PatchTokenItemModule extends AbstractModule
             Status::SUCCESS_200_OK,
             $data
         );
+    }
+
+    protected function updateItem(ModelInterface $model): array
+    {
+        $errors = [];
+
+        try {
+            $connection = $this->get(ID::DATABASE);
+            $mapper = new TokenMapper($connection);
+            $mapper->update($model);
+        } catch (QueryException) {
+            $errors['general'] = 'update';
+        }
+
+        return $errors;
     }
 
     protected function getResponseUserData(ModelInterface $userModel): array

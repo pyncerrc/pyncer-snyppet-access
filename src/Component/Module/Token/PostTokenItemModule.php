@@ -164,7 +164,7 @@ class PostTokenItemModule extends AbstractModule
         $dateTime = pyncer_date_time();
         $dateTime->add(new DateInterval('PT' . $loginTokenExpiration . 'S'));
 
-        $model = new TokenModel([
+        $tokenModel = new TokenModel([
             'user_id' => $accessManager->getUserId(),
             'scheme' => $this->getScheme() ?? PYNCER_ACCESS_DEFAULT_SCHEME,
             'realm' => $this->getRealm() ?? PYNCER_ACCESS_DEFAULT_REALM,
@@ -172,14 +172,26 @@ class PostTokenItemModule extends AbstractModule
             'expiration_date_time' => $dateTime
         ]);
 
-        $mapper = new TokenMapper($connection);
-        $mapper->insert($model);
+        $errors = $this->insertItem($tokenModel);
 
-        $expirationDateTime = $model->getExpirationDateTime()
+        if ($errors) {
+            if (($errors['general'] ?? null) === 'insert') {
+                return new Response(
+                    Status::SERVER_ERROR_500_INTERNAL_SERVER_ERROR,
+                );
+            }
+
+            return new JsonResponse(
+                Status::CLIENT_ERROR_422_UNPROCESSABLE_ENTITY,
+                ['errors' => $errors]
+            );
+        }
+
+        $expirationDateTime = $tokenModel->getExpirationDateTime()
             ->format(PYNCER_DATE_TIME_FORMAT);
 
         $data = [
-            'token' => $model->getToken(),
+            'token' => $tokenModel->getToken(),
             'expiration_date_time' => $expirationDateTime,
         ];
 
@@ -195,8 +207,23 @@ class PostTokenItemModule extends AbstractModule
             $data,
         ))->withAddedHeader(
             'Location',
-            $this->getResourceUrl($model)
+            $this->getResourceUrl($tokenModel)
         );
+    }
+
+    protected function insertItem(ModelInterface $model): array
+    {
+        $errors = [];
+
+        try {
+            $connection = $this->get(ID::DATABASE);
+            $mapper = new TokenMapper($connection);
+            $mapper->insert($model);
+        } catch (QueryException) {
+            $errors['general'] = 'insert';
+        }
+
+        return $errors;
     }
 
     protected function login(AccessManager $accessManager): ?bool
