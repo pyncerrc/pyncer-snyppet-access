@@ -3,8 +3,8 @@ namespace Pyncer\Snyppet\Access\Table\User;
 
 use Pyncer\Snyppet\Access\Table\User\DataModel;
 use Pyncer\Data\Mapper\AbstractMapper;
-use Pyncer\Data\Model\ModelInterface;
 use Pyncer\Data\Mapper\MapperResultInterface;
+use Pyncer\Data\Model\ModelInterface;
 
 class DataMapper extends AbstractMapper
 {

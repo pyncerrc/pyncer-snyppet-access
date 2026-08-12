@@ -12,6 +12,7 @@ use Pyncer\Validation\Rule\RequiredRule;
 use Pyncer\Validation\Rule\StringRule;
 use Pyncer\Validation\Rule\UidRule;
 
+use const Pyncer\Snyppet\Access\EMAIL_ALLOW_UPPERCASE as PYNCER_ACCESS_EMAIL_ALLOW_UPPERCASE;
 use const Pyncer\Snyppet\Access\PHONE_ALLOW_E164 as PYNCER_ACCESS_PHONE_ALLOW_E164;
 use const Pyncer\Snyppet\Access\PHONE_ALLOW_NANP as PYNCER_ACCESS_PHONE_ALLOW_NANP;
 use const Pyncer\Snyppet\Access\PHONE_ALLOW_FORMATTING as PYNCER_ACCESS_PHONE_ALLOW_FORMATTING;
@@ -70,7 +71,9 @@ class UserValidator extends AbstractValidator
 
         $this->addRules(
             'email',
-            new EmailRule(),
+            new EmailRule(
+                allowUppercase: PYNCER_ACCESS_EMAIL_ALLOW_UPPERCASE,
+            ),
             new StringRule(
                 maxLength: 125,
                 allowNull: true,

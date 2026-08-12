@@ -13,6 +13,8 @@ Initializer::define('Pyncer\Snyppet\Access\LOGIN_TOKEN_EXPIRATION', 172800);
 Initializer::define('Pyncer\Snyppet\Access\VALIDATE_LOGIN_NOT_FOUND', false);
 Initializer::define('Pyncer\Snyppet\Access\USER_GUEST_ID', 1);
 
+Initializer::defineFrom('Pyncer\Snyppet\Access\EMAIL_ALLOW_UPPERCASE', 'Pyncer\Validation\EMAIL_ALLOW_UPPERCASE', false);
+
 Initializer::defineFrom('Pyncer\Snyppet\Access\PHONE_ALLOW_E164', 'Pyncer\Validation\PHONE_ALLOW_E164', true);
 Initializer::defineFrom('Pyncer\Snyppet\Access\PHONE_ALLOW_NANP', 'Pyncer\Validation\PHONE_ALLOW_NANP', false);
 Initializer::defineFrom('Pyncer\Snyppet\Access\PHONE_ALLOW_FORMATTING', 'Pyncer\Validation\PHONE_ALLOW_FORMATTING', false);
