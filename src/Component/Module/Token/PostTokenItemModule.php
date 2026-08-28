@@ -10,6 +10,7 @@ use Pyncer\App\Identifier as ID;
 use Pyncer\Component\Module\AbstractModule;
 use Pyncer\Data\MapperQuery\OptionsQueryParam;
 use Pyncer\Data\Model\ModelInterface;
+use Pyncer\Database\Exception\QueryException;
 use Pyncer\Exception\UnexpectedValueException;
 use Pyncer\Http\Message\JsonResponse;
 use Pyncer\Http\Message\Status;
