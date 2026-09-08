@@ -190,19 +190,13 @@ class PostTokenItemModule extends AbstractModule
             );
         }
 
-        $expirationDateTime = $tokenModel->getExpirationDateTime()
-            ->format(PYNCER_DATE_TIME_FORMAT);
-
-        $data = [
-            'token' => $tokenModel->getToken(),
-            'expiration_date_time' => $expirationDateTime,
-        ];
+        $data = $this->getResponseItemData($tokenModel);
 
         $options = new OptionsQueryParam($this->queryParams->getString('$options'));
         if ($options->hasOption('include-user')) {
             $userModel = $tokenModel->getSideModel('user');
 
-            $data['user'] = $this->getResponseUserData($userModel);
+            $data['user'] = $this->getResponseUserData($userModel) ?: null;
         }
 
         return (new JsonResponse(
@@ -244,6 +238,17 @@ class PostTokenItemModule extends AbstractModule
         }
 
         return null;
+    }
+
+    protected function getResponseItemData(TokenModel $tokenModel): array
+    {
+        $expirationDateTime = $tokenModel->getExpirationDateTime()
+            ->format(PYNCER_DATE_TIME_FORMAT);
+
+        return [
+            'token' => $tokenModel->getToken(),
+            'expiration_date_time' => $expirationDateTime,
+        ];
     }
 
     protected function getResponseUserData(ModelInterface $userModel): array

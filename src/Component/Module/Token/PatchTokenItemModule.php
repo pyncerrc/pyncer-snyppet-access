@@ -145,18 +145,12 @@ class PatchTokenItemModule extends AbstractModule
             );
         }
 
-        $expirationDateTime = $tokenModel->getExpirationDateTime()
-            ->format(PYNCER_DATE_TIME_FORMAT);
-
-        $data = [
-            'token' => $tokenModel->getToken(),
-            'expiration_date_time' => $expirationDateTime,
-        ];
+        $data = $this->getResponseItemData($tokenModel);
 
         if ($tokenMapperQuery->getOptions()->hasOption('include-user')) {
             $userModel = $tokenModel->getSideModel('user');
 
-            $data['user'] = $this->getResponseUserData($userModel);
+            $data['user'] = $this->getResponseUserData($userModel) ?: null;
         }
 
         return new JsonResponse(
@@ -178,6 +172,17 @@ class PatchTokenItemModule extends AbstractModule
         }
 
         return $errors;
+    }
+
+    protected function getResponseItemData(TokenModel $tokenModel): array
+    {
+        $expirationDateTime = $tokenModel->getExpirationDateTime()
+            ->format(PYNCER_DATE_TIME_FORMAT);
+
+        return [
+            'token' => $tokenModel->getToken(),
+            'expiration_date_time' => $expirationDateTime,
+        ];
     }
 
     protected function getResponseUserData(ModelInterface $userModel): array
