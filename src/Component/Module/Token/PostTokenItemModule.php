@@ -173,6 +173,8 @@ class PostTokenItemModule extends AbstractModule
             'expiration_date_time' => $dateTime
         ]);
 
+        $tokenModel->setSideModel('user', $accessManager->getUser());
+
         $errors = $this->insertItem($tokenModel);
 
         if ($errors) {
@@ -198,7 +200,7 @@ class PostTokenItemModule extends AbstractModule
 
         $options = new OptionsQueryParam($this->queryParams->getString('$options'));
         if ($options->hasOption('include-user')) {
-            $userModel = $accessManager->getUser();
+            $userModel = $tokenModel->getSideModel('user');
 
             $data['user'] = $this->getResponseUserData($userModel);
         }
