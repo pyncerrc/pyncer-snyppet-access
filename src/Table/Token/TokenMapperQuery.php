@@ -43,7 +43,7 @@ class TokenMapperQuery extends AbstractRequestMapperQuery
             return true;
         }
 
-        return parent::isValidFilter;
+        return parent::isValidFilter($left, $right, $operator);
     }
 
     protected function isValidOption(string $option): bool
